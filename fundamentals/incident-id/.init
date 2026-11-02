@@ -1,22 +1,22 @@
 #!/bin/sh
-# pwn.college runs this once as root before the student's workspace opens.
-# Install an idempotent Bash startup snippet for NYITSec challenges only.
+# Executed by pwn.college as root before this challenge's workspace opens.
+# Alter only this container's system Bash startup file, not a student's
+# persistent ~/.bashrc (which is shared across their challenges).
 set -eu
 
-bashrc=/home/hacker/.bashrc
-marker='# NYITSec challenge-only initial directory'
+bashrc=/etc/bashrc
+marker='# NYITSec challenge: start at /challenge'
 
-if [ ! -e "$bashrc" ]; then
-    install -m 0644 -o hacker -g hacker /dev/null "$bashrc"
+if [ ! -f "$bashrc" ]; then
+    touch "$bashrc"
 fi
 
 if ! grep -Fq "$marker" "$bashrc"; then
     cat >> "$bashrc" <<'BASHRC'
 
-# NYITSec challenge-only initial directory
-# This does not affect other pwn.college challenges unless they also
-# provide the /challenge/bin/nyitsec-answer helper.
-if [[ "$-" == *i* && -x /challenge/bin/nyitsec-answer ]]; then
+# NYITSec challenge: start at /challenge
+# The guard prevents auto-cd in scripts and after intentional navigation.
+if [[ "$-" == *i* && "$PWD" == "/home/hacker" && -d /challenge ]]; then
     builtin cd /challenge
 fi
 BASHRC
