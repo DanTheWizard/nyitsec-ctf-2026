@@ -1,0 +1,23 @@
+#!/bin/sh
+# pwn.college runs this once as root before the student's workspace opens.
+# Install an idempotent Bash startup snippet for NYITSec challenges only.
+set -eu
+
+bashrc=/home/hacker/.bashrc
+marker='# NYITSec challenge-only initial directory'
+
+if [ ! -e "$bashrc" ]; then
+    install -m 0644 -o hacker -g hacker /dev/null "$bashrc"
+fi
+
+if ! grep -Fq "$marker" "$bashrc"; then
+    cat >> "$bashrc" <<'BASHRC'
+
+# NYITSec challenge-only initial directory
+# This does not affect other pwn.college challenges unless they also
+# provide the /challenge/bin/nyitsec-answer helper.
+if [[ "$-" == *i* && -x /challenge/bin/nyitsec-answer ]]; then
+    builtin cd /challenge
+fi
+BASHRC
+fi
