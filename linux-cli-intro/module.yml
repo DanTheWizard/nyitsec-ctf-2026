@@ -75,7 +75,7 @@ resources:
         
         Try **Tab** to complete filenames and **Up Arrow** to reuse your last command.
         
-        Be careful with file-changing commands like `rm`, `mv`, `chmod`, and shell redirection (`>`). Check what a command will change before running it. Never blindly paste commands you do not understand.
+        Be careful with file-changing commands like `rm`, `mv`, `chmod`, and shell redirection (`>`). Check what a command will change before running it. **! _Never blindly paste commands you do not understand_ !**.
         
         **Next:** Move on to the AI guidance below, or jump directly to the first CTF challenge.
   - name: "3. Using AI as a learning assistant"
