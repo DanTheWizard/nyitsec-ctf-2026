@@ -1,0 +1,50 @@
+# NYITSec CTF — Instructions for AI coding agents
+
+These instructions apply to the entire repository, including code produced by ChatGPT, Codex, and other AI coding assistants.
+
+## Goals and environment
+
+- We maintain the NYITSec 2026 **private** pwn.college dojo in this GitHub repository.
+- Preserve the dojo's YAML ID `example` unless the administrator explicitly migrates the live dojo. The deployed dojo reference is `example~36e653d5`.
+- Preserve the working first challenge and do not modify upstream example modules (`hello`, `world`, `demo`, `lectures`) unless requested.
+- Keep the optional Linux & CLI introduction (`linux-cli-intro`) ungraded.
+- Never put dojo update codes, private SSH keys, API tokens, actual passwords, student records, or reusable static pwn.college flags in source control.
+
+## How to author a new challenge
+
+**Always use the generator rather than copying challenge folders by hand:**
+
+~~~bash
+python3 -m pip install -r requirements-dev.txt
+python3 scripts/new_challenge.py --module fundamentals --id example-task --name "Example Task"
+~~~
+
+For a new module, also provide `--new-module-name "Display Name"`. The generator registers new challenges in `module.yml` and new modules in `dojo.yml`.
+
+The generator automatically creates:
+
+- Executable `/challenge/.init` for interactive startup in `/challenge`.
+- Executable `/challenge/bin/nyitsec-answer` command, which delegates to `/challenge/verify`.
+- Executable `/challenge/verify`, a **fail-closed** Python verifier; replace `is_correct()` before publication.
+- Student `DESCRIPTION.md` and officer `README.md`.
+
+**Do not alter students' persistent `~/.bashrc`.** The challenge's temporary container-local startup hook uses `/etc/bashrc`. Only interactive shells starting from the default home directory should auto-cd.
+
+## Security and pedagogy
+
+- `/flag` belongs to pwn.college, is student-specific, and is only revealed after the actual solve condition.
+- Keep the answer wrapper non-privileged; the protected verifier alone may read `/flag`.
+- Use synthetic data and authorized lab targets only. Make exercise goals clear, keep difficulty appropriate for beginners, and teach reasoning instead of giving away flags.
+- Avoid shell commands and startup behavior that break legitimate student navigation; the auto-cd pattern is a default convenience, not a forced directory lock.
+- When a challenge deliberately teaches directory navigation or requires a different solve workflow, document the exception and discuss changing the template/validator rather than silently omitting required files.
+
+## Before creating a PR
+
+~~~bash
+python3 scripts/validate_dojo.py
+python3 -m unittest discover -s tests -v
+~~~
+
+Check that `dojo.yml` and every relevant `module.yml` parse, all executable file modes are correct (`100755`), no scaffold TODOs remain in published challenges, and documentation says `nyitsec-answer`.
+
+Changes go to a feature branch and pull request, not directly to `main`. After merge, GitHub Actions validates sources before triggering the dojo updater. Test student experience in the live workspace after deployment.

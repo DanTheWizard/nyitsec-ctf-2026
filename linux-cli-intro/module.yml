@@ -11,7 +11,7 @@ resources:
         
         1. Launch a challenge when you want a hands-on workspace (the lecture itself does not launch one).
         2. Use **Workspace > Terminal** in pwn.college.
-        3. You will see a prompt similar to `hacker@dojo:~$`. The `$` means the shell is ready for a command. Type a command and press Enter.
+        3. In NYITSec challenges, you may see `hacker@dojo:/challenge$` because the terminal starts in the challenge directory. Other terminals may show `hacker@dojo:~$`. The `$` means the shell is ready for a command. Type a command and press Enter.
         
         ### Navigate around
         

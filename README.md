@@ -15,6 +15,21 @@ This private repository contains the source for our test [NYITSec pwn.college do
 - All student-facing challenge instructions are in the challenge's `DESCRIPTION.md`; officer notes are in `README.md` beside the files.
 - The original template modules are preserved as examples.
 
+## Create new challenges (for officers and AI tools)
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full instructions and [AGENTS.md](./AGENTS.md) for AI coding assistant rules.
+
+Run:
+
+```bash
+python3 -m pip install -r requirements-dev.txt
+python3 scripts/new_challenge.py --module fundamentals --id my-first-task --name "My First Task"
+```
+
+The generator creates the standard **auto-cd into `/challenge`**, **`nyitsec-answer`**, and **`/challenge/verify`** files with executable permissions, plus student and author documentation. The verifier starts in a **fail-closed** state and must be implemented before merging.
+
+New modules can be generated with `--new-module-name "New Module Name"`. GitHub pull-request validation checks YAML structure, required helpers, permissions, and unfinished challenge templates. The dojo update workflow runs validation before deployment.
+
 ## Dojo updates
 
 - The YAML base identifier is `example`, while pwn.college assigned the deployed dojo reference `example~36e653d5`.
