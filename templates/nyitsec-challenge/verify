@@ -1,0 +1,32 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+
+"""NYITSec answer verification template.
+
+Replace is_correct() with challenge-specific logic before deployment.
+This stub intentionally rejects every answer; it never leaks the flag.
+"""
+
+from pathlib import Path
+
+
+def is_correct(answer: str) -> bool:
+    # TODO: Implement a challenge-specific, safe verification strategy.
+    return False
+
+
+def main() -> None:
+    try:
+        answer = input("Enter your answer: ").strip()
+    except EOFError:
+        print("No answer provided.")
+        return
+
+    if is_correct(answer):
+        print("Correct! Your pwn.college flag is:")
+        print(Path("/flag").read_text().strip())
+    else:
+        print("That answer is not correct. Try again.")
+
+
+if __name__ == "__main__":
+    main()
