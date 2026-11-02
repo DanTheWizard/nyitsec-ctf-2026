@@ -2,7 +2,7 @@
 
 Welcome to this NYITSec challenge!
 
-**Your terminal should open in \`/challenge\`.** If not, run \`cd /challenge\`.
+**Your terminal should open in `/challenge`.** If not, run `cd /challenge`.
 
 ## Objective
 
@@ -23,6 +23,6 @@ When you have solved the challenge, enter:
 nyitsec-answer
 ~~~
 
-The command checks your answer and reveals your own pwn.college flag after a correct solution. The fallback command is \`/challenge/verify\`.
+The command checks your answer and reveals your own pwn.college flag after a correct solution. The fallback command is `/challenge/verify`.
 
-**Challenge author:** Replace all TODOs before merging. Do not include real credentials or fixed pwn.college flags in the repository.
+**Challenge author:** Replace all draft placeholders before merging. Do not include real credentials or fixed pwn.college flags in the repository.
