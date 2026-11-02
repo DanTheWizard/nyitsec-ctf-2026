@@ -2,6 +2,13 @@
 
 This private repository contains the source for our test [NYITSec pwn.college dojo](https://pwn.college/example~36e653d5/).
 
+## Optional Linux & CLI introduction
+
+- **Linux & CLI Quick Start (Optional):** a short, ungraded reading module with three expandable resources: terminal navigation, file searching, and responsible use of AI for hints and debugging.
+- It appears before CTF Fundamentals and contains no challenges or points.
+- Edit `linux-cli-intro/module.yml` for the lecture content. A video or slide deck can be added later as an ungraded lecture resource.
+- See `linux-cli-intro/README.md` for author and deployment notes.
+
 ## Pilot challenge
 
 - **CTF Fundamentals → First Incident - SSH Log Investigation:** inspect a fictional log and use `/challenge/verify` to earn a unique pwn.college flag.

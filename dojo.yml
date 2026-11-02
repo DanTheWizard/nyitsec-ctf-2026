@@ -6,6 +6,7 @@ award:
   emoji: 🛡️
 image: pwncollege/challenge-simple
 modules:
+  - id: linux-cli-intro
   - id: fundamentals
   - id: hello
   - id: world
