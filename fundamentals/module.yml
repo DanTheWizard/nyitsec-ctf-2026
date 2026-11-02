@@ -2,3 +2,7 @@ name: NYITSec CTF Fundamentals
 challenges:
   - id: incident-id
     name: First Incident - SSH Log Investigation
+  - id: base64-basics
+    name: Base64 Basics - Decode a Message
+  - id: base64-layers
+    name: Base64 Layers - Triple Decode

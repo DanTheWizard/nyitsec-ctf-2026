@@ -1,0 +1,34 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+"""Check the decoded answer code, then reveal the student's pwn.college flag."""
+
+import hashlib
+import hmac
+from pathlib import Path
+
+# Compare a one-way digest, not a readable solution or a reusable flag.
+EXPECTED_SHA256 = "b6949045d8c1a6a4b7e475bdf1860e66c2af75a8fbeee08ea0df2466c82442bd"
+
+
+def is_correct(answer: str) -> bool:
+    candidate = answer.strip().casefold().encode("utf-8")
+    digest = hashlib.sha256(candidate).hexdigest()
+    return hmac.compare_digest(digest, EXPECTED_SHA256)
+
+
+def main() -> None:
+    print("NYITSec - Base64 Layers")
+    try:
+        answer = input("Enter the decoded answer code: ")
+    except EOFError:
+        print("No answer provided.")
+        return
+
+    if is_correct(answer):
+        print("Correct! Here is your unique pwn.college flag:")
+        print(Path("/flag").read_text(encoding="utf-8").strip())
+    else:
+        print("Not quite. Decode the provided file and try again.")
+
+
+if __name__ == "__main__":
+    main()
