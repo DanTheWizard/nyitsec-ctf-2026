@@ -6,3 +6,5 @@ challenges:
     name: Base64 Basics - Decode a Message
   - id: base64-layers
     name: Base64 Layers - Triple Decode
+  - id: base64-more
+    name: More Base64?
