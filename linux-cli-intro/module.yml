@@ -11,46 +11,7 @@ resources:
         
         1. Launch a challenge when you want a hands-on workspace (the lecture itself does not launch one).
         2. Use **Workspace > Terminal** in pwn.college.
-        3. In NYITSec challenges, you may see `hacker@dojo:/challengename: Linux & CLI Quick Start (Optional)
-resources:
-  - name: "1. Getting comfortable with the terminal"
-    type: markdown
-    content: |
-        **Estimated reading: 4 minutes. Optional, no points and no flag.**
-        
-        The Linux **command-line interface (CLI)** lets you work with a computer by typing commands rather than clicking through windows. You will use it throughout NYITSec CTF challenges.
-        
-        ### Opening the terminal
-        
-        1. Launch a challenge when you want a hands-on workspace (the lecture itself does not launch one).
-        2. Use **Workspace > Terminal** in pwn.college.
-         because the terminal starts in the challenge directory. Other terminals may show `hacker@dojo:~name: Linux & CLI Quick Start (Optional)
-resources:
-  - name: "1. Getting comfortable with the terminal"
-    type: markdown
-    content: |
-        **Estimated reading: 4 minutes. Optional, no points and no flag.**
-        
-        The Linux **command-line interface (CLI)** lets you work with a computer by typing commands rather than clicking through windows. You will use it throughout NYITSec CTF challenges.
-        
-        ### Opening the terminal
-        
-        1. Launch a challenge when you want a hands-on workspace (the lecture itself does not launch one).
-        2. Use **Workspace > Terminal** in pwn.college.
-        . The `name: Linux & CLI Quick Start (Optional)
-resources:
-  - name: "1. Getting comfortable with the terminal"
-    type: markdown
-    content: |
-        **Estimated reading: 4 minutes. Optional, no points and no flag.**
-        
-        The Linux **command-line interface (CLI)** lets you work with a computer by typing commands rather than clicking through windows. You will use it throughout NYITSec CTF challenges.
-        
-        ### Opening the terminal
-        
-        1. Launch a challenge when you want a hands-on workspace (the lecture itself does not launch one).
-        2. Use **Workspace > Terminal** in pwn.college.
-         means the shell is ready for a command. Type a command and press Enter.
+        3. In NYITSec challenges, you may see `hacker@dojo:/challenge$` because the terminal starts in the challenge directory. Other terminals may show `hacker@dojo:~$`. The `$` means the shell is ready for a command. Type a command and press Enter.
         
         ### Navigate around
         
