@@ -1,6 +1,9 @@
-name: Update Dojo
+name: Update NYITSec Dojo
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   update:
@@ -8,5 +11,5 @@ jobs:
     steps:
       - uses: pwncollege/dojo-update@v1
         with:
-          dojo: example
+          dojo: example~36e653d5
           update_code: ${{ secrets.UPDATE_CODE }}
