@@ -1,0 +1,4 @@
+name: NYITSec CTF Fundamentals
+challenges:
+  - id: incident-id
+    name: First Incident - SSH Log Investigation
