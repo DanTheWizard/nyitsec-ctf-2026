@@ -1,10 +1,12 @@
 id: example
-name: Example Dojo
-type: example
+name: NYITSec CTF 2026 (Testing)
+description: Hands-on cybersecurity challenges and training for the NYITSec club.
+type: hidden
 award:
-  emoji: 😀
+  emoji: 🛡️
 image: pwncollege/challenge-simple
 modules:
+  - id: fundamentals
   - id: hello
   - id: world
   - id: demo

@@ -1,4 +1,24 @@
-# Example Dojo
+# NYITSec CTF 2026
+
+This private repository contains the source for our test [NYITSec pwn.college dojo](https://pwn.college/example~36e653d5/).
+
+## Pilot challenge
+
+- **CTF Fundamentals → First Incident - SSH Log Investigation:** inspect a fictional log and use `/challenge/verify` to earn a unique pwn.college flag.
+- All student-facing challenge instructions are in the challenge's `DESCRIPTION.md`; officer notes are in `README.md` beside the files.
+- The original template modules are preserved as examples.
+
+## Dojo updates
+
+- The YAML base identifier is `example`, while pwn.college assigned the deployed dojo reference `example~36e653d5`.
+- The action workflow in `.github/workflows/update.yml` is configured for the deployed reference and runs after pushes to `main`.
+- To activate it, create the GitHub Actions **repository secret** `UPDATE_CODE` containing only the secret update code (the final part of the private update URL).
+- **Never commit or share the update code or entire secret URL.** The pwn.college SSH deploy key is for reading this private repository, not for authorizing updates.
+- Develop changes on feature branches, review pull requests, then merge into `main` to deploy. First deployment must be tested in the actual pwn.college workspace.
+
+---
+
+## Original pwn.college example reference
 
 This repository features an example dojo.
 
