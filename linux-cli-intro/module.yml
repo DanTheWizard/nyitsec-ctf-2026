@@ -1,0 +1,125 @@
+name: Linux & CLI Quick Start (Optional)
+resources:
+  - name: "1. Getting comfortable with the terminal"
+    type: markdown
+    content: |
+    **Estimated reading: 4 minutes. Optional, no points and no flag.**
+    
+    The Linux **command-line interface (CLI)** lets you work with a computer by typing commands rather than clicking through windows. You will use it throughout NYITSec CTF challenges.
+    
+    ### Opening the terminal
+    
+    1. Launch a challenge when you want a hands-on workspace (the lecture itself does not launch one).
+    2. Use **Workspace > Terminal** in pwn.college.
+    3. You will see a prompt similar to `hacker@dojo:~$`. The `$` means the shell is ready for a command. Type a command and press Enter.
+    
+    ### Navigate around
+    
+    | Command | What it does |
+    | --- | --- |
+    | `pwd` | Show your current directory |
+    | `ls` | List files here |
+    | `ls -la` | List more details, including hidden files |
+    | `cd folder` | Move into a directory |
+    | `cd ..` | Move to the parent directory |
+    | `cd ~` | Return to your home directory |
+    | `clear` | Clear the terminal screen |
+    
+    - `/` is the **filesystem root**. An **absolute path** begins there, such as `/challenge/events.log`.
+    - A **relative path** is interpreted from your current directory, such as `events.log` when you are already in `/challenge`.
+    - `~` means your home directory. Your prompt commonly shows `hacker` as your username.
+    
+    Try these commands in any launched training workspace:
+    
+    ~~~bash
+    pwd
+    ls /challenge
+    cd /challenge
+    ls -la
+    ~~~
+    
+    **Tip:** The terminal is not a search box. Exact spelling, spaces, and capitalization matter on Linux.
+  - name: "2. Read files, search, and get unstuck"
+    type: markdown
+    content: |
+    **Estimated reading: 4 minutes. Optional, no points and no flag.**
+    
+    These commands are especially useful for the **First Incident: SSH Log Investigation** challenge that follows this module.
+    
+    | Command | What it does |
+    | --- | --- |
+    | `cat filename` | Print a small text file |
+    | `less filename` | Read a long file, scrolling with the keyboard; press `q` to quit |
+    | `head filename` | Show the start of a file |
+    | `tail filename` | Show the end of a file |
+    | `grep 'text' filename` | Find lines containing text |
+    | `find /challenge -type f` | Find files under `/challenge` |
+    | `command --help` | Show command usage, when supported |
+    | `man command` | Read a command's manual, when installed |
+    
+    ### Mini example: investigate a log
+    
+    ~~~bash
+    cat /challenge/events.log
+    grep 'service=ssh' /challenge/events.log
+    grep 'status=blocked' /challenge/events.log
+    ~~~
+    
+    A **pipe** (`|`) passes the output of one command to another:
+    
+    ~~~bash
+    cat /challenge/events.log | grep 'service=ssh'
+    ~~~
+    
+    For many uses, `grep 'service=ssh' /challenge/events.log` is simpler and does the same filtering.
+    
+    Try **Tab** to complete filenames and **Up Arrow** to reuse your last command.
+    
+    Be careful with file-changing commands like `rm`, `mv`, `chmod`, and shell redirection (`>`). Check what a command will change before running it. Never blindly paste commands you do not understand.
+    
+    **Next:** Move on to the AI guidance below, or jump directly to the first CTF challenge.
+  - name: "3. Using AI as a learning assistant"
+    type: markdown
+    content: |
+    **Estimated reading: 3 minutes. Optional, no points and no flag.**
+    
+    You can ask an AI assistant (such as ChatGPT) to **explain**, **teach**, and **debug** Linux commands. The goal is to understand your actions, not just obtain a flag. Participation does not require AI.
+    
+    ### Good prompts to try
+    
+    **Understand a command**
+    
+    > I'm learning Linux CLI for a beginner CTF. Explain what `grep` does, what each part of `grep 'ssh' events.log` means, and give me a safe practice example.
+    
+    **Ask for a hint, not the answer**
+    
+    > I have a simulated log file and need to identify an SSH login that is external and blocked. Don't give me the event ID. Suggest one command or investigation step I should try next, and explain why.
+    
+    **Debug an error**
+    
+    > I ran `cat events.log` and got "No such file or directory." My current directory is `/home/hacker`. Explain why that happened and show me how to find the correct file path.
+    
+    **Learn from your attempt**
+    
+    > Here's my command and its non-sensitive output. Explain what worked, what didn't, and give me a hint for the next step. Don't solve the challenge for me.
+    
+    ### A simple method
+    
+    1. **Try first**: read the challenge instructions and inspect the available files.
+    2. **Ask one specific question**: share the command you tried and the exact error, if any.
+    3. **Verify the suggestion**: test it in the terminal; AI can be incorrect.
+    4. **Explain it back**: if you cannot describe what the command does, ask for a simpler explanation.
+    
+    ### Safety and fairness
+    
+    - Do not paste real passwords, access tokens, private keys, student information, or your unique challenge flag into an AI tool.
+    - Use only the intentionally provided CTF environment. Never run suggested commands against university systems or other real-world targets without authorization.
+    - Ask what unfamiliar commands do before running them, particularly commands that delete files, modify permissions, or run downloaded scripts.
+    - Follow the instructor's or event's AI-use rules. A future competition may restrict AI even if these introductory exercises do not.
+    
+    ### Want more practice?
+    
+    Visit the official [pwn.college Linux Luminarium](https://pwn.college/linux-luminarium/) for deeper, interactive CLI lessons.
+    
+    **Ready?** Open **CTF Fundamentals → First Incident: SSH Log Investigation**.
+challenges: []
