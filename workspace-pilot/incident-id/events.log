@@ -1,0 +1,7 @@
+2026-11-02T09:00:01Z event=NY-101 service=web source=internal status=allowed account=student src=192.0.2.10
+2026-11-02T09:01:15Z event=NY-102 service=ssh source=internal status=allowed account=admin src=192.0.2.11
+2026-11-02T09:02:04Z event=NY-103 service=web source=external status=blocked account=visitor src=198.51.100.22
+2026-11-02T09:03:39Z event=NY-104 service=ssh source=external status=allowed account=guest src=203.0.113.42
+2026-11-02T09:04:27Z event=NY-105 service=ssh source=internal status=blocked account=student src=192.0.2.12
+2026-11-02T09:05:58Z event=NY-106 service=ssh source=external status=blocked account=admin src=198.51.100.77
+2026-11-02T09:06:41Z event=NY-107 service=web source=external status=allowed account=visitor src=203.0.113.43
