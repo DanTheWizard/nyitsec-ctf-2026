@@ -1,0 +1,9 @@
+name: NYITSec Writable Workspace Pilot (Experimental)
+description: Copies three existing exercises to a temporary writable /nyitsec-ctf workspace for testing. Originals remain unchanged.
+challenges:
+  - id: incident-id
+    name: "PILOT: SSH Log Investigation"
+  - id: base64-basics
+    name: "PILOT: Base64 Basics"
+  - id: password-audit
+    name: "PILOT: Weak Password Audit"
