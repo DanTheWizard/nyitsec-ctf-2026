@@ -33,3 +33,7 @@ Try all three exercises with the official pwn.college terminal. Confirm:
 - The existing fundamentals module retains its original `/challenge` behavior.
 
 Only after live verification should the shared generator and validators be migrated.
+
+## Post-pilot migration
+
+The writable workspace system has now been adopted in the five regular Fundamentals challenges and the shared generator/template. This pilot is retained temporarily as a known-good comparison while officers verify the live migration. Remove this module from `dojo.yml` only after the real Fundamentals challenges pass their smoke tests.

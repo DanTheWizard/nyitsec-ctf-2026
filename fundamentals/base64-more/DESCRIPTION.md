@@ -10,7 +10,7 @@ Some decoded layers include ordinary chat text, such as message headers or repli
 
 ### Step 1: Read and decode
 
-Your terminal should start in `/challenge`. If not, enter `cd /challenge`.
+Your terminal should start in the writable `/nyitsec-ctf` directory. If it does not, run `cd /nyitsec-ctf`.
 
 ```bash
 ls
@@ -43,3 +43,5 @@ Enter the **final two-word message**, not an intermediate message or a Base64 st
 **Hint:** A successful Base64 decode does not always mean you have reached the final answer. Read each result before decoding again.
 
 **Reminder:** Base64 is encoding, not encryption, and normal message text should not be treated as Base64 data.
+
+**Temporary workspace notice:** `/nyitsec-ctf` is part of the current challenge container and is not persistent. Copy any scripts or notes you want to keep to `~/` before restarting or switching challenges.

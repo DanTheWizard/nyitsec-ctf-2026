@@ -1,23 +1,24 @@
 #!/bin/sh
-# Executed by pwn.college as root before this challenge's workspace opens.
-# Alter only this container's system Bash startup file, not a student's
-# persistent ~/.bashrc (which is shared across their challenges).
+# NYITSec default writable workspace startup. Invoked by pwn.college as root.
 set -eu
 
-bashrc=/etc/bashrc
-marker='# NYITSec challenge: start at /challenge'
+# Prepare a fresh, container-local /nyitsec-ctf directory.
+/usr/local/bin/python -I /challenge/.workspace.py
 
+# Configure Bash in the disposable challenge container only, never ~/.bashrc.
+bashrc=/etc/bashrc
+marker='# NYITSec workspace: open /nyitsec-ctf'
 if [ ! -f "$bashrc" ]; then
     touch "$bashrc"
 fi
-
 if ! grep -Fq "$marker" "$bashrc"; then
     cat >> "$bashrc" <<'BASHRC'
 
-# NYITSec challenge: start at /challenge
-# The guard prevents auto-cd in scripts and after intentional navigation.
-if [[ "$-" == *i* && "$PWD" == "/home/hacker" && -d /challenge ]]; then
-    builtin cd /challenge
+# NYITSec workspace: open /nyitsec-ctf
+# Do not change directory for noninteractive commands or intentional navigation.
+if [[ "$-" == *i* && "$PWD" == "/home/hacker" && -d /nyitsec-ctf ]]; then
+    builtin cd /nyitsec-ctf
+    printf '%s\n' '[NYITSec] Temporary writable workspace. Save your work to ~/ before restarting this challenge.'
 fi
 BASHRC
 fi

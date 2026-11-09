@@ -49,6 +49,12 @@ class ScaffoldTests(unittest.TestCase):
             self.assertTrue((path / relative).is_file(), relative)
             self.assertTrue((path / relative).stat().st_mode & stat.S_IXUSR, relative)
 
+        for relative in [".workspace.py", ".ctfignore"]:
+            self.assertTrue((path / relative).is_file(), relative)
+        self.assertIn("/nyitsec-ctf", (path / ".init").read_text(encoding="utf-8"))
+        self.assertIn("/challenge/.workspace.py", (path / ".init").read_text(encoding="utf-8"))
+        self.assertIn("PROTECTED_NAMES", (path / ".workspace.py").read_text(encoding="utf-8"))
+
         description = (path / "DESCRIPTION.md").read_text(encoding="utf-8")
         self.assertIn("First Task", description)
         self.assertIn("nyitsec-answer", description)
@@ -103,6 +109,19 @@ class ScaffoldTests(unittest.TestCase):
             encoding="utf-8",
         )
         self.assertEqual(validate.check_repository(self.root), [])
+
+    def test_validator_detects_missing_workspace_setup(self):
+        path = scaffold.create_challenge(self.root, "fundamentals", "missing", "Missing")
+        (path / ".workspace.py").unlink()
+        issues = validate.check_repository(self.root)
+        self.assertTrue(any("missing .workspace.py" in x for x in issues))
+
+    def test_validator_detects_template_drift(self):
+        path = scaffold.create_challenge(self.root, "fundamentals", "drift", "Drift")
+        setup = path / ".init"
+        setup.write_text(setup.read_text() + "\n# accidental drift\n")
+        issues = validate.check_repository(self.root)
+        self.assertTrue(any(".init differs from standard template" in x for x in issues))
 
     def test_validator_rejects_duplicate_yaml_keys(self):
         (self.root / "fundamentals/module.yml").write_text(

@@ -2,7 +2,7 @@
 
 Welcome to your first NYITSec investigation!
 
-**Your terminal should open inside `/challenge`.** If it does not, enter `cd /challenge` to move there.
+**Your terminal should open inside the writable `/nyitsec-ctf` workspace.** If it does not, run `cd /nyitsec-ctf`. The original files and protected checker remain under `/challenge`.
 
 The security team has provided a fictional log file called `events.log`.
 
@@ -38,3 +38,5 @@ If the shortcut is unavailable, the original command still works:
 ```
 
 **Reminder:** All log events and IP addresses in this challenge are fictional.
+
+**Temporary workspace notice:** `/nyitsec-ctf` is part of the current challenge container and is not persistent. Copy any scripts or notes you want to keep to `~/` before restarting or switching challenges.

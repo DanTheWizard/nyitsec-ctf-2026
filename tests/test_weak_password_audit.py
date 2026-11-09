@@ -69,12 +69,14 @@ printf '%s' "$found"
 
     def test_beginner_instructions_use_writable_home_directory(self):
         description = (ROOT / "DESCRIPTION.md").read_text(encoding="utf-8")
-        self.assertIn("nano ~/audit.sh", description)
-        self.assertIn("bash ~/audit.sh", description)
+        self.assertIn("nano audit.sh", description)
+        self.assertIn("bash audit.sh", description)
+        self.assertIn("/nyitsec-ctf", description)
         self.assertIn("Ctrl+O", description)
         self.assertIn("Ctrl+X", description)
-        self.assertIn("/challenge/common_passwords.txt", description)
-        self.assertIn("/challenge/audit_record.txt", description)
+        self.assertIn("common_passwords.txt", description)
+        self.assertIn("audit_record.txt", description)
+        self.assertNotIn("nano ~/audit.sh", description)
         self.assertNotIn("saved as `audit.sh` in your working directory", description)
 
 

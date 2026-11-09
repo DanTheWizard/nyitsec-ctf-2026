@@ -6,7 +6,7 @@ This time, the NYITSec message has been encoded with Base64 **three times**. Dec
 
 **Your task:** Decode `message.b64` until you can read a normal message containing an **answer code**, then submit that code using the usual NYITSec checker.
 
-Your terminal should start in `/challenge`. If not, run `cd /challenge`.
+Your terminal should start in the writable `/nyitsec-ctf` directory. If it does not, run `cd /nyitsec-ctf`.
 
 ### Investigate
 
@@ -37,3 +37,5 @@ nyitsec-answer
 The checker reveals your own pwn.college flag if the code is correct.
 
 **Reminder:** Base64 encoding is reversible, and repeated encoding does not make data secure.
+
+**Temporary workspace notice:** `/nyitsec-ctf` is part of the current challenge container and is not persistent. Copy any scripts or notes you want to keep to `~/` before restarting or switching challenges.

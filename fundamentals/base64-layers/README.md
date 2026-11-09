@@ -17,3 +17,7 @@ This exercise follows Base64 Basics. The text was encoded with Base64 **three ti
 5. Submit the printed flag and confirm a solve is registered.
 
 The offline CI tests verify all three decoding layers and the answer checker.
+
+## Writable workspace standard
+
+The `.init` startup script prepares `/nyitsec-ctf` by running `.workspace.py` and opens interactive terminals there. Challenge input copies are writable by `hacker`; protected files remain in `/challenge`. The blacklist in `.ctfignore` may add exclusions, but protected core names cannot be copied. The workspace is disposable across challenge restarts. Check `pwd`, `ls -la`, `touch scratch.txt`, `nyitsec-answer`, and correct/wrong solution submissions after deployment.

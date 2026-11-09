@@ -23,9 +23,11 @@ For a new module, also provide `--new-module-name "Display Name"`. The generator
 
 The generator automatically creates:
 
-- Executable `/challenge/.init` for interactive startup in `/challenge`.
-- Executable `/challenge/bin/nyitsec-answer` command, which delegates to `/challenge/verify`.
-- Executable `/challenge/verify`, a **fail-closed** Python verifier; replace `is_correct()` before publication.
+- Executable `/challenge/.init` creates a disposable, writable `/nyitsec-ctf` workspace and opens new interactive terminals there.
+- `/challenge/.workspace.py` copies only allowed regular lab files and directories into `/nyitsec-ctf`. It refuses to overwrite an existing destination.
+- `/challenge/.ctfignore` provides extra exclusions. Mandatory exclusions protect `.init`, `.workspace.py`, `.ctfignore`, `verify`, `bin/`, and internal README/DESCRIPTION files.
+- Executable `/challenge/bin/nyitsec-answer` delegates to `/challenge/verify` without copying the protected verifier.
+- Executable `/challenge/verify` is a **fail-closed** Python verifier; replace `is_correct()` before publication.
 - Student `DESCRIPTION.md` and officer `README.md`.
 
 **Do not alter students' persistent `~/.bashrc`.** The challenge's temporary container-local startup hook uses `/etc/bashrc`. Only interactive shells starting from the default home directory should auto-cd.
@@ -35,7 +37,8 @@ The generator automatically creates:
 - `/flag` belongs to pwn.college, is student-specific, and is only revealed after the actual solve condition.
 - Keep the answer wrapper non-privileged; the protected verifier alone may read `/flag`.
 - Use synthetic data and authorized lab targets only. Make exercise goals clear, keep difficulty appropriate for beginners, and teach reasoning instead of giving away flags.
-- Do not tell students to create files inside `/challenge`: it is typically root-owned and read-only to `hacker`. If the challenge requires students to write scripts, instruct them to save scripts as `~/script.sh` using `nano ~/script.sh` and run with `bash ~/script.sh`, while reading provided challenge files with absolute `/challenge/...` paths. Include beginner-friendly editor save/exit instructions when appropriate.
+- Students create and edit files inside the writable `/nyitsec-ctf` workspace: `nano script.sh`, save with Ctrl+O and Enter, exit with Ctrl+X, then `bash script.sh`. Challenge input copies can be read by relative filename. Protected originals remain in `/challenge`; do not instruct students to edit them.
+- Warn students `/nyitsec-ctf` is temporary; copy important scripts or notes outside it into `~/` before replacing the challenge container. Never automatically clean persistent home data.
 - Avoid shell commands and startup behavior that break legitimate student navigation; the auto-cd pattern is a default convenience, not a forced directory lock.
 - When a challenge deliberately teaches directory navigation or requires a different solve workflow, document the exception and discuss changing the template/validator rather than silently omitting required files.
 
@@ -46,6 +49,6 @@ python3 scripts/validate_dojo.py
 python3 -m unittest discover -s tests -v
 ~~~
 
-Check that `dojo.yml` and every relevant `module.yml` parse, all executable file modes are correct (`100755`), no scaffold TODOs remain in published challenges, and documentation says `nyitsec-answer`.
+Check that `dojo.yml` and every relevant `module.yml` parse, `.init`, `verify`, and the command wrapper are executable (`100755`), `.workspace.py` and `.ctfignore` exist, standard startup/copy files match the shared template, no scaffold TODOs remain, and documentation says `nyitsec-answer` and `/nyitsec-ctf`. Preserve the working verifiers and their student-specific `/flag` behavior.
 
 Changes go to a feature branch and pull request, not directly to `main`. After merge, GitHub Actions validates sources before triggering the dojo updater. Test student experience in the live workspace after deployment.

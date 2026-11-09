@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Create a NYITSec challenge with our standard student-friendly shell setup."""
+"""Generate NYITSec challenges with a writable, disposable /nyitsec-ctf workspace."""
 
 import argparse
-import os
 from pathlib import Path
 import re
 import shutil
@@ -13,7 +12,7 @@ import yaml
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = PROJECT_ROOT / "templates" / "nyitsec-challenge"
-RESERVED_MODULES = {"hello", "world", "demo", "lectures", "linux-cli-intro"}
+RESERVED_MODULES = {"hello", "world", "demo", "lectures", "linux-cli-intro", "workspace-pilot"}
 SLUG_RE = re.compile(r"^[a-z][a-z0-9-]*$")
 
 
@@ -73,7 +72,7 @@ def create_challenge(root: Path, module_id: str, challenge_id: str,
            if isinstance(ch, dict)):
         raise ValueError(f"Challenge ID already registered: {challenge_id}")
 
-    for name in [".init", "verify", "bin/nyitsec-answer", "DESCRIPTION.md", "README.md"]:
+    for name in [".init", ".workspace.py", ".ctfignore", "verify", "bin/nyitsec-answer", "DESCRIPTION.md", "README.md"]:
         if not (TEMPLATE / name).is_file():
             raise FileNotFoundError(f"Missing NYITSec template file: {name}")
 

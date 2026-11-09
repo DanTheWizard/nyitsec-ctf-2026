@@ -14,7 +14,7 @@ The files in this lab were created for training. **They are not from a real pers
 
 ## Explore the audit materials
 
-Your terminal should start in `/challenge`. If it does not, use `cd /challenge`.
+Your terminal should start in the writable `/nyitsec-ctf` directory. If it does not, use `cd /nyitsec-ctf`.
 
 ```bash
 ls
@@ -27,13 +27,13 @@ wc -l common_passwords.txt
 - `common_passwords.txt` contains a small, **synthetic** list of candidates. One matches the digest.
 - The plaintext password is **not** stored in the audit record. You must test candidates against the digest.
 
-**Where can you save your own work?** The `/challenge` directory is owned by `root`, so you can read the provided files but cannot create or edit files there. Your own home directory (`/home/hacker`, also written as `~`) is writable. Save your scripts there instead. **Do not use `sudo` or change permissions on `/challenge`.**
+**Your writable workspace:** The two synthetic files were copied to `/nyitsec-ctf`, where you can create `audit.sh` alongside them. The protected originals and answer verifier remain in `/challenge`. **Do not use `sudo` or change permissions on `/challenge`.**
 
 ## Use AI to help you write a Bash script
 
 You can write the script yourself, or ask an AI assistant to help you understand each part. Try a prompt like this:
 
-> I'm new to Linux and Bash, and I'm completing an authorized, offline password-strength audit using **synthetic files only**. The supplied files are `/challenge/common_passwords.txt` (one candidate per line) and `/challenge/audit_record.txt` (with a line starting `sha256=`). `/challenge` is read-only to me, but my home directory is writable. Please teach me **step by step how to create a Bash script using `nano ~/audit.sh`, save it, exit nano, and run it with `bash ~/audit.sh`**. Help me write a `while IFS= read -r` loop that checks every candidate's SHA-256 digest using `printf '%s'` and `sha256sum`, compares the result with the local recorded digest, prints the matching candidate, and stops. Use full `/challenge/...` file paths so the script works from any directory. Explain the commands instead of just giving me the final answer. Do not make network requests or attempt any logins.
+> I'm learning Bash through an authorized offline password-strength audit using **synthetic files only**. My terminal starts in the writable `/nyitsec-ctf` directory, alongside `common_passwords.txt` (one candidate per line) and `audit_record.txt` (which contains a `sha256=` line). Teach me **step by step how to create `audit.sh` using `nano audit.sh`, save it with Ctrl+O and Enter, exit with Ctrl+X, and run `bash audit.sh`**. Help me write a `while IFS= read -r` loop that hashes each candidate using `printf '%s'` and `sha256sum`, compares it with the recorded digest, prints the matching candidate, and stops. Explain each command rather than just giving me the answer. Do not make network requests or attempt any logins.
 
 Useful building blocks include:
 
@@ -44,23 +44,22 @@ printf '%s' 'example123' | sha256sum
 
 ### Create, save, and run your script
 
-Even if your terminal prompt shows `/challenge`, **save your script in your home directory**, not inside `/challenge`.
+Since the terminal starts in **`/nyitsec-ctf`**, you can save a script directly in the current directory:
 
-1. Run `nano ~/audit.sh` to open a new, writable script file in the terminal text editor.
-2. Type or paste your Bash script into the editor. If you need help, ask your AI assistant to explain how `nano` works before continuing.
-3. Press **Ctrl+O**, then **Enter**, to save the file. Press **Ctrl+X** to exit.
-4. Run the saved script with `bash ~/audit.sh`. You do not need `chmod +x` when using `bash` to run it.
-5. If your script prints an error, open it again with `nano ~/audit.sh` and investigate the error message.
+1. Run `nano audit.sh` to open the editor.
+2. Type or paste your script. Ask AI to explain any parts you do not understand.
+3. Press **Ctrl+O**, then **Enter** to save. Press **Ctrl+X** to exit.
+4. Run `bash audit.sh`. You do not need `chmod +x` when launching a script through Bash.
+5. If something fails, use `nano audit.sh` again to inspect and correct it.
 
 ```bash
-nano ~/audit.sh
+pwd
+nano audit.sh
 # After saving and exiting nano:
-bash ~/audit.sh
+bash audit.sh
 ```
 
-**Important:** In your Bash script, read the source files from `/challenge/common_passwords.txt` and `/challenge/audit_record.txt`, because your script lives in a different directory. You do **not** need to copy or modify the provided files.
-
-If you see **`Error writing audit.sh: Permission denied`**, you likely tried to save it in `/challenge`. Exit the editor without replacing protected files, and use `nano ~/audit.sh` instead.
+The data files are already in the same working directory, so your Bash loop can read `common_passwords.txt` and `audit_record.txt` directly. **Do not edit `/challenge/verify` or use privileged commands.**
 
 **Important:** `printf '%s'` avoids adding a newline to a candidate. Hashes depend on the exact input bytes, so using `echo` may give a different result.
 
@@ -85,3 +84,5 @@ Consider these questions after completing the audit:
 - Why should real applications use **unique salts** and a **dedicated, slow password-hashing algorithm such as Argon2id**, rather than plain SHA-256?
 
 **Scope:** This exercise uses local, synthetic files only. Do not test actual accounts, websites, university systems, or anyone else's passwords.
+
+**Temporary workspace notice:** `/nyitsec-ctf` is part of the current challenge container and is not persistent. Copy any scripts or notes you want to keep to `~/` before restarting or switching challenges.

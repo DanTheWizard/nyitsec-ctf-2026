@@ -9,11 +9,12 @@ This private repository contains the source for our test [NYITSec pwn.college do
 - Edit `linux-cli-intro/module.yml` for the lecture content. A video or slide deck can be added later as an ungraded lecture resource.
 - See `linux-cli-intro/README.md` for author and deployment notes.
 
-## Pilot challenge
+## NYITSec CTF Fundamentals
 
-- **CTF Fundamentals → First Incident - SSH Log Investigation:** inspect a fictional log and use `/challenge/verify` to earn a unique pwn.college flag.
-- All student-facing challenge instructions are in the challenge's `DESCRIPTION.md`; officer notes are in `README.md` beside the files.
-- The original template modules are preserved as examples.
+- The five Fundamentals exercises now use a **writable, disposable `/nyitsec-ctf` directory**. Their original data and protected `/challenge/verify` remain in `/challenge`.
+- Every challenge provides an executable `nyitsec-answer` command; only a correct answer unlocks that student's pwn.college flag.
+- Student-facing instructions are in each challenge's `DESCRIPTION.md` and officer notes are beside it in `README.md`.
+- The former **Workspace Pilot** module is retained temporarily for comparison during live verification. The original upstream example modules are preserved as references.
 
 ## Create new challenges (for officers and AI tools)
 
@@ -26,9 +27,9 @@ python3 -m pip install -r requirements-dev.txt
 python3 scripts/new_challenge.py --module fundamentals --id my-first-task --name "My First Task"
 ```
 
-The generator creates the standard **auto-cd into `/challenge`**, **`nyitsec-answer`**, and **`/challenge/verify`** files with executable permissions, plus student and author documentation. The verifier starts in a **fail-closed** state and must be implemented before merging.
+The generator creates the standard **writable `/nyitsec-ctf` workspace**, **`.workspace.py`**, **`.ctfignore`**, **`nyitsec-answer`**, and protected **`/challenge/verify`** files, plus student and author documentation. Core executable files retain their executable bits. The verifier starts in a **fail-closed** state and must be implemented before merging.
 
-New modules can be generated with `--new-module-name "New Module Name"`. GitHub pull-request validation checks YAML structure, required helpers, permissions, and unfinished challenge templates. The dojo update workflow runs validation before deployment.
+New modules can be generated with `--new-module-name "New Module Name"`. GitHub pull-request validation checks YAML structure, required helpers, shared workspace startup consistency, permissions, and unfinished challenge templates. The dojo update workflow runs validation before deployment.
 
 ## Dojo updates
 

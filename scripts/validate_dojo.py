@@ -11,7 +11,11 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 EXEMPT_MODULES = {"hello", "world", "demo", "lectures", "linux-cli-intro"}
+# The already-proven test module remains separate until all migrated challenges
+# are verified live. Its startup scripts intentionally retain pilot labeling.
+PILOT_MODULES = {"workspace-pilot"}
 EXECUTABLES = (".init", "verify", "bin/nyitsec-answer")
+REQUIRED_FILES = (*EXECUTABLES, ".workspace.py", ".ctfignore", "DESCRIPTION.md", "README.md")
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -94,12 +98,38 @@ def check_repository(root: Path) -> list[str]:
                 continue
 
             folder = root / mid / cid
+            for rel in REQUIRED_FILES:
+                if not (folder / rel).is_file():
+                    errors.append(f"{mid}/{cid}: missing {rel}; use scripts/new_challenge.py")
             for rel in EXECUTABLES:
                 path = folder / rel
-                if not path.is_file():
-                    errors.append(f"{mid}/{cid}: missing {rel}; use scripts/new_challenge.py")
-                elif not path.stat().st_mode & stat.S_IXUSR:
+                if path.is_file() and not path.stat().st_mode & stat.S_IXUSR:
                     errors.append(f"{mid}/{cid}: {rel} must be executable (git mode 100755)")
+
+            # Prevent silent divergence in the shared startup/copy code.
+            # The experimental pilot stays independent until the live migration
+            # is confirmed, but it still needs the same required helper files.
+            init = folder / ".init"
+            worker = folder / ".workspace.py"
+            if mid not in PILOT_MODULES:
+                for relative in (".init", ".workspace.py"):
+                    actual = folder / relative
+                    expected = ROOT / "templates" / "nyitsec-challenge" / relative
+                    if actual.is_file() and expected.is_file():
+                        if actual.read_bytes() != expected.read_bytes():
+                            errors.append(
+                                f"{mid}/{cid}: {relative} differs from standard template; "
+                                "use scripts/new_challenge.py or update the shared template"
+                            )
+                    elif not expected.is_file():
+                        errors.append(f"Missing standard template file: {expected}")
+            if init.is_file() and (
+                "/challenge/.workspace.py" not in init.read_text(encoding="utf-8")
+                or "/nyitsec-ctf" not in init.read_text(encoding="utf-8")
+            ):
+                errors.append(f"{mid}/{cid}: .init must prepare and open /nyitsec-ctf")
+            if worker.is_file() and "PROTECTED_NAMES" not in worker.read_text(encoding="utf-8"):
+                errors.append(f"{mid}/{cid}: .workspace.py must keep mandatory exclusions")
 
             desc = folder / "DESCRIPTION.md"
             if not desc.is_file():
@@ -108,6 +138,8 @@ def check_repository(root: Path) -> list[str]:
                 content = desc.read_text(encoding="utf-8")
                 if "nyitsec-answer" not in content:
                     errors.append(f"{mid}/{cid}: student instructions must mention nyitsec-answer")
+                if "/nyitsec-ctf" not in content:
+                    errors.append(f"{mid}/{cid}: student instructions must mention /nyitsec-ctf")
                 if "TODO" in content:
                     errors.append(f"{mid}/{cid}: replace TODO markers in DESCRIPTION.md")
 
