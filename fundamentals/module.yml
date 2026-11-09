@@ -8,3 +8,5 @@ challenges:
     name: Base64 Layers - Triple Decode
   - id: base64-more
     name: More Base64?
+  - id: password-audit
+    name: Weak Password Audit
