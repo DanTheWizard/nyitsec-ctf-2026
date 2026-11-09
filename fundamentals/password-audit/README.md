@@ -24,6 +24,24 @@ SHA-256 here is intentionally **unsalted and fast** to make the exercise accessi
 
 No real password or pwn.college flag is stored in this challenge. The fictional matching candidate appears in the synthetic wordlist by design.
 
+## Where students should write scripts
+
+**The `/challenge` directory is intentionally owned by root and not writable by the `hacker` user.** This is part of the standard challenge filesystem, not a misconfiguration. Do not change `/challenge` ownership or grant write access.
+
+Students will start in `/challenge`, where they can read the provided synthetic files. To create their own Bash file, they should use:
+
+```bash
+nano ~/audit.sh
+# Press Ctrl+O, Enter to save; Ctrl+X to exit.
+bash ~/audit.sh
+```
+
+`~/audit.sh` is saved in `/home/hacker`, which is writable. Students can launch it while their working directory remains `/challenge`. Encourage them to use absolute data paths (`/challenge/common_passwords.txt` and `/challenge/audit_record.txt`) in the script so it runs correctly from any directory.
+
+The AI prompt in the student description explicitly asks for **both** a Bash auditing loop and the editor/save/run instructions. Explain that a fixed `candidate="..."` only checks one guess; the learning goal is looping over every synthetic candidate with `while IFS= read -r candidate`.
+
+If nano reports **Permission denied** when saving `audit.sh`, check whether the student used `nano audit.sh` from `/challenge` rather than `nano ~/audit.sh`. No `sudo`, `chown`, or `chmod` is needed to solve the issue.
+
 ## Standard NYITSec conveniences
 
 - Executable `.init` configures interactive Bash to start in `/challenge`.
@@ -35,7 +53,7 @@ No real password or pwn.college flag is stored in this challenge. The fictional 
 
 1. Launch a fresh workspace. Verify `pwd` shows `/challenge`.
 2. Read `audit_record.txt` and `common_passwords.txt`.
-3. Run a student-created local-only Bash loop and confirm it finds exactly one match.
+3. Verify that `nano ~/audit.sh` can create and save a script while `nano audit.sh` inside `/challenge` cannot; run the script with `bash ~/audit.sh`, and confirm a local-only loop finds exactly one match.
 4. Verify the matching answer succeeds with `nyitsec-answer`; a wrong guess or a case-changed guess must fail.
 5. Submit the resulting pwn.college flag and confirm the solve is recorded.
 6. Discuss mitigations without implying that any real incident occurred.
