@@ -114,7 +114,7 @@ def check_repository(root: Path) -> list[str]:
             if mid not in PILOT_MODULES:
                 for relative in (".init", ".workspace.py"):
                     actual = folder / relative
-                    expected = root / "templates" / "nyitsec-challenge" / relative
+                    expected = ROOT / "templates" / "nyitsec-challenge" / relative
                     if actual.is_file() and expected.is_file():
                         if actual.read_bytes() != expected.read_bytes():
                             errors.append(
