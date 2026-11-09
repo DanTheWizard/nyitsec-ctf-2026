@@ -35,6 +35,7 @@ The generator automatically creates:
 - `/flag` belongs to pwn.college, is student-specific, and is only revealed after the actual solve condition.
 - Keep the answer wrapper non-privileged; the protected verifier alone may read `/flag`.
 - Use synthetic data and authorized lab targets only. Make exercise goals clear, keep difficulty appropriate for beginners, and teach reasoning instead of giving away flags.
+- Do not tell students to create files inside `/challenge`: it is typically root-owned and read-only to `hacker`. If the challenge requires students to write scripts, instruct them to save scripts as `~/script.sh` using `nano ~/script.sh` and run with `bash ~/script.sh`, while reading provided challenge files with absolute `/challenge/...` paths. Include beginner-friendly editor save/exit instructions when appropriate.
 - Avoid shell commands and startup behavior that break legitimate student navigation; the auto-cd pattern is a default convenience, not a forced directory lock.
 - When a challenge deliberately teaches directory navigation or requires a different solve workflow, document the exception and discuss changing the template/validator rather than silently omitting required files.
 
