@@ -11,7 +11,7 @@ resources:
         
         1. Launch a challenge when you want a hands-on workspace (the lecture itself does not launch one).
         2. Use **Workspace > Terminal** in pwn.college.
-        3. In NYITSec challenges, you may see `hacker@dojo:/challenge$` because the terminal starts in the challenge directory. Other terminals may show `hacker@dojo:~$`. The `$` means the shell is ready for a command. Type a command and press Enter.
+        3. In NYITSec challenges, you may see `hacker@dojo:/nyitsec-ctf$` because the terminal starts in a writable, temporary workspace. Other terminals may show `hacker@dojo:~$`. The `$` means the shell is ready for a command. Type a command and press Enter.
         
         ### Navigate around
         
@@ -25,16 +25,16 @@ resources:
         | `cd ~` | Return to your home directory |
         | `clear` | Clear the terminal screen |
         
-        - `/` is the **filesystem root**. An **absolute path** begins there, such as `/challenge/events.log`.
-        - A **relative path** is interpreted from your current directory, such as `events.log` when you are already in `/challenge`.
+        - `/` is the **filesystem root**. An **absolute path** begins there, such as `/nyitsec-ctf/events.log`.
+        - A **relative path** is interpreted from your current directory, such as `events.log` when you are already in `/nyitsec-ctf`.
         - `~` means your home directory. Your prompt commonly shows `hacker` as your username.
         
         Try these commands in any launched training workspace:
         
         ~~~bash
         pwd
-        ls /challenge
-        cd /challenge
+        ls /nyitsec-ctf
+        cd /nyitsec-ctf
         ls -la
         ~~~
         
@@ -53,39 +53,40 @@ resources:
         | `head filename` | Show the start of a file |
         | `tail filename` | Show the end of a file |
         | `grep 'text' filename` | Find lines containing text |
-        | `find /challenge -type f` | Find files under `/challenge` |
+        | `find /nyitsec-ctf -type f` | Find files under `/challenge` |
         | `command --help` | Show command usage, when supported |
         | `man command` | Read a command's manual, when installed |
         
         ### Mini example: investigate a log
         
         ~~~bash
-        cat /challenge/events.log
-        grep 'service=ssh' /challenge/events.log
-        grep 'status=blocked' /challenge/events.log
+        cat /nyitsec-ctf/events.log
+        grep 'service=ssh' /nyitsec-ctf/events.log
+        grep 'status=blocked' /nyitsec-ctf/events.log
         ~~~
         
         A **pipe** (`|`) passes the output of one command to another:
         
         ~~~bash
-        cat /challenge/events.log | grep 'service=ssh'
+        cat /nyitsec-ctf/events.log | grep 'service=ssh'
         ~~~
         
-        For many uses, `grep 'service=ssh' /challenge/events.log` is simpler and does the same filtering.
+        For many uses, `grep 'service=ssh' /nyitsec-ctf/events.log` is simpler and does the same filtering.
         
         Try **Tab** to complete filenames and **Up Arrow** to reuse your last command.
         
         ### Create and run your own Bash script
         
-        Challenge files under `/challenge` are normally readable but may not be writable. Your home directory (`~`, usually `/home/hacker`) is where you should create your own files.
+        NYITSec challenge data is copied to the **writable `/nyitsec-ctf` workspace**. Create your own scripts there. The protected original files and answer verifier stay in `/challenge`. Your home directory (`~`, usually `/home/hacker`) is where to save work that should persist across challenges.
         
         ~~~bash
-        nano ~/myscript.sh
+        cd /nyitsec-ctf
+        nano myscript.sh
         # After saving and exiting nano:
-        bash ~/myscript.sh
+        bash myscript.sh
         ~~~
         
-        In **nano**, press **Ctrl+O**, then **Enter** to save, and **Ctrl+X** to exit. The `~` in the filename keeps your script in your writable home directory even if your terminal is currently in `/challenge`. If a script needs a challenge file, refer to it by its full path, such as `/challenge/events.log`.
+        In **nano**, press **Ctrl+O**, then **Enter** to save, and **Ctrl+X** to exit. The supplied challenge files are already beside your script in `/nyitsec-ctf`, so filenames like `events.log` work directly. **Temporary workspace:** All files in `/nyitsec-ctf` are lost when the challenge container is replaced. Copy important work to `~/` before leaving.
         
         
         Be careful with file-changing commands like `rm`, `mv`, `chmod`, and shell redirection (`>`). Check what a command will change before running it. **! _Never blindly paste commands you do not understand_ !**.
