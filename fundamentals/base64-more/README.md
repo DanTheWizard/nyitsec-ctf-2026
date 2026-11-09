@@ -25,3 +25,7 @@ There are **three total Base64 decoding steps**, but the second and third requir
 6. Check that the existing Base64 Basics and Base64 Layers challenges still work.
 
 The offline unit test independently decodes each stage, verifies that the message wrappers remain intact, and tests both accepted and rejected answer submissions without reading `/flag`.
+
+## Writable workspace standard
+
+The `.init` startup script prepares `/nyitsec-ctf` by running `.workspace.py` and opens interactive terminals there. Challenge input copies are writable by `hacker`; protected files remain in `/challenge`. The blacklist in `.ctfignore` may add exclusions, but protected core names cannot be copied. The workspace is disposable across challenge restarts. Check `pwd`, `ls -la`, `touch scratch.txt`, `nyitsec-answer`, and correct/wrong solution submissions after deployment.

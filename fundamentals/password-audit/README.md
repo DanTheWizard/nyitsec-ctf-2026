@@ -26,36 +26,38 @@ No real password or pwn.college flag is stored in this challenge. The fictional 
 
 ## Where students should write scripts
 
-**The `/challenge` directory is intentionally owned by root and not writable by the `hacker` user.** This is part of the standard challenge filesystem, not a misconfiguration. Do not change `/challenge` ownership or grant write access.
+**The writable directory is now `/nyitsec-ctf`.** At startup, `.workspace.py` copies the two synthetic input files there while keeping the protected originals in `/challenge`.
 
-Students will start in `/challenge`, where they can read the provided synthetic files. To create their own Bash file, they should use:
+Students can run:
 
 ```bash
-nano ~/audit.sh
-# Press Ctrl+O, Enter to save; Ctrl+X to exit.
-bash ~/audit.sh
+nano audit.sh
+# Press Ctrl+O and Enter to save; Ctrl+X to exit.
+bash audit.sh
 ```
 
-`~/audit.sh` is saved in `/home/hacker`, which is writable. Students can launch it while their working directory remains `/challenge`. Encourage them to use absolute data paths (`/challenge/common_passwords.txt` and `/challenge/audit_record.txt`) in the script so it runs correctly from any directory.
+The AI prompt explicitly requests both editor instructions and an offline Bash loop. A fixed `candidate="..."` checks only one guess; the objective is iterating over the entire synthetic list with `while IFS= read -r candidate`.
 
-The AI prompt in the student description explicitly asks for **both** a Bash auditing loop and the editor/save/run instructions. Explain that a fixed `candidate="..."` only checks one guess; the learning goal is looping over every synthetic candidate with `while IFS= read -r candidate`.
-
-If nano reports **Permission denied** when saving `audit.sh`, check whether the student used `nano audit.sh` from `/challenge` rather than `nano ~/audit.sh`. No `sudo`, `chown`, or `chmod` is needed to solve the issue.
+The temporary workspace is destroyed when the challenge container is restarted or replaced. Students who want to keep their work should copy it to `~/` first.
 
 ## Standard NYITSec conveniences
 
-- Executable `.init` configures interactive Bash to start in `/challenge`.
+- Executable `.init` configures interactive Bash to start in `/nyitsec-ctf`.
 - Executable `bin/nyitsec-answer` appears on the challenge PATH.
 - Executable `verify` compares the supplied password's exact bytes and reveals `/flag` on a match.
 - Student instructions are in `DESCRIPTION.md`.
 
 ## Smoke test
 
-1. Launch a fresh workspace. Verify `pwd` shows `/challenge`.
+1. Launch a fresh workspace. Verify `pwd` shows `/nyitsec-ctf`.
 2. Read `audit_record.txt` and `common_passwords.txt`.
-3. Verify that `nano ~/audit.sh` can create and save a script while `nano audit.sh` inside `/challenge` cannot; run the script with `bash ~/audit.sh`, and confirm a local-only loop finds exactly one match.
+3. Confirm `nano audit.sh` and `bash audit.sh` work in `/nyitsec-ctf` and an offline loop finds exactly one match.
 4. Verify the matching answer succeeds with `nyitsec-answer`; a wrong guess or a case-changed guess must fail.
 5. Submit the resulting pwn.college flag and confirm the solve is recorded.
 6. Discuss mitigations without implying that any real incident occurred.
 
 The offline test suite checks the local wordlist, SHA-256 data integrity, Bash demonstration logic, and answer verifier without touching `/flag`.
+
+## Writable workspace standard
+
+The `.init` startup script prepares `/nyitsec-ctf` by running `.workspace.py` and opens interactive terminals there. Challenge input copies are writable by `hacker`; protected files remain in `/challenge`. The blacklist in `.ctfignore` may add exclusions, but protected core names cannot be copied. The workspace is disposable across challenge restarts. Check `pwd`, `ls -la`, `touch scratch.txt`, `nyitsec-answer`, and correct/wrong solution submissions after deployment.
