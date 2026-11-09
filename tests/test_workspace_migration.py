@@ -52,6 +52,10 @@ class WritableWorkspaceMigrationTests(unittest.TestCase):
                 self.assertIn("nyitsec-answer", desc)
                 self.assertIn("Temporary workspace notice", desc)
                 self.assertNotIn("cd /challenge", desc)
+                self.assertNotIn("you are in `/challenge`", desc)
+                notes = (folder / "README.md").read_text()
+                self.assertNotIn("starts in `/challenge`", notes)
+                self.assertNotIn("should show `/challenge`", notes)
 
                 with tempfile.TemporaryDirectory() as root:
                     dest = Path(root) / "student-workspace"

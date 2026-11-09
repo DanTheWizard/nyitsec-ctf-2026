@@ -10,14 +10,14 @@ There are **three total Base64 decoding steps**, but the second and third requir
 
 ### Standard NYITSec challenge mechanics
 
-- `.init` (executable): interactive Bash starts in `/challenge`.
+- `.init` (executable): interactive Bash starts in `/nyitsec-ctf`.
 - `bin/nyitsec-answer` (executable): delegates to `/challenge/verify` via the provided challenge PATH.
 - `verify` (executable): compares the submitted original message's SHA-256 digest and reveals the student's unique root-protected `/flag` only after a correct match.
 - `message.b64`: the fictional forwarded conversation in Base64, not a real secret or flag.
 
 ### Smoke test after merge and deployment
 
-1. Open a fresh workspace; `pwd` should show `/challenge`.
+1. Open a fresh workspace; `pwd` should show `/nyitsec-ctf`.
 2. Run `base64 -d message.b64`, identify the inner Base64 string, and decode it.
 3. Find the encoded substring inside the reply, decode it, and confirm it reveals the original two-word message.
 4. Enter an incorrect answer into `nyitsec-answer`, which must not reveal the flag.

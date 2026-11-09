@@ -32,6 +32,6 @@ nyitsec-answer
 
 Enter the answer code shown **inside the decoded message**, then submit the unique pwn.college flag that the checker prints.
 
-**Tip:** If your terminal reports "No such file or directory", run `pwd` and check that you are in `/challenge`.
+**Tip:** If your terminal reports "No such file or directory", run `pwd` and check that you are in `/nyitsec-ctf`.
 
 **Temporary workspace notice:** `/nyitsec-ctf` is part of the current challenge container and is not persistent. Copy any scripts or notes you want to keep to `~/` before restarting or switching challenges.
