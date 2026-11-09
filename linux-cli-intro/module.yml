@@ -75,6 +75,19 @@ resources:
         
         Try **Tab** to complete filenames and **Up Arrow** to reuse your last command.
         
+        ### Create and run your own Bash script
+        
+        Challenge files under `/challenge` are normally readable but may not be writable. Your home directory (`~`, usually `/home/hacker`) is where you should create your own files.
+        
+        ~~~bash
+        nano ~/myscript.sh
+        # After saving and exiting nano:
+        bash ~/myscript.sh
+        ~~~
+        
+        In **nano**, press **Ctrl+O**, then **Enter** to save, and **Ctrl+X** to exit. The `~` in the filename keeps your script in your writable home directory even if your terminal is currently in `/challenge`. If a script needs a challenge file, refer to it by its full path, such as `/challenge/events.log`.
+        
+        
         Be careful with file-changing commands like `rm`, `mv`, `chmod`, and shell redirection (`>`). Check what a command will change before running it. **! _Never blindly paste commands you do not understand_ !**.
         
         **Next:** Move on to the AI guidance below, or jump directly to the first CTF challenge.
