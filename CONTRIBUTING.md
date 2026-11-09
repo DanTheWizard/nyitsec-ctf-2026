@@ -28,7 +28,7 @@ That also registers `web-basics` in `dojo.yml`.
 
 ## What you need to customize
 
-- `DESCRIPTION.md`: objective and instructions for students, including `nyitsec-answer`.
+- `DESCRIPTION.md`: objective and instructions for students, including `nyitsec-answer`. If students create scripts, show them how to use a writable path such as `~/audit.sh` with `nano ~/audit.sh` (Ctrl+O, Enter, Ctrl+X) and `bash ~/audit.sh`. Keep provided challenge files under `/challenge` read-only; use absolute paths when reading them from students' scripts.
 - `verify`: implement `is_correct(answer)`. The generated stub **always returns False** until you implement your solution check. Read `/flag` only after validation succeeds.
 - Add fictional challenge files (logs, data, code, etc.), and document any dependencies in the author `README.md`.
 

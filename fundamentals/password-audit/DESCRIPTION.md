@@ -27,11 +27,13 @@ wc -l common_passwords.txt
 - `common_passwords.txt` contains a small, **synthetic** list of candidates. One matches the digest.
 - The plaintext password is **not** stored in the audit record. You must test candidates against the digest.
 
+**Where can you save your own work?** The `/challenge` directory is owned by `root`, so you can read the provided files but cannot create or edit files there. Your own home directory (`/home/hacker`, also written as `~`) is writable. Save your scripts there instead. **Do not use `sudo` or change permissions on `/challenge`.**
+
 ## Use AI to help you write a Bash script
 
 You can write the script yourself, or ask an AI assistant to help you understand each part. Try a prompt like this:
 
-> I'm learning Bash as part of an authorized, offline cybersecurity training exercise. I have a local file named `common_passwords.txt` with one candidate per line and a local `audit_record.txt` containing a line starting with `sha256=`. Help me write a Bash script that reads every candidate, computes its SHA-256 digest using `printf '%s'` and `sha256sum`, compares it with the recorded digest, prints the matching candidate, and stops. Explain each command and how I can safely test it. Do not use any network requests or login attempts.
+> I'm new to Linux and Bash, and I'm completing an authorized, offline password-strength audit using **synthetic files only**. The supplied files are `/challenge/common_passwords.txt` (one candidate per line) and `/challenge/audit_record.txt` (with a line starting `sha256=`). `/challenge` is read-only to me, but my home directory is writable. Please teach me **step by step how to create a Bash script using `nano ~/audit.sh`, save it, exit nano, and run it with `bash ~/audit.sh`**. Help me write a `while IFS= read -r` loop that checks every candidate's SHA-256 digest using `printf '%s'` and `sha256sum`, compares the result with the local recorded digest, prints the matching candidate, and stops. Use full `/challenge/...` file paths so the script works from any directory. Explain the commands instead of just giving me the final answer. Do not make network requests or attempt any logins.
 
 Useful building blocks include:
 
@@ -40,7 +42,25 @@ grep '^sha256=' audit_record.txt
 printf '%s' 'example123' | sha256sum
 ```
 
-Your script can be saved as `audit.sh` in your working directory. You may run it with `bash audit.sh`, so changing executable permissions is optional.
+### Create, save, and run your script
+
+Even if your terminal prompt shows `/challenge`, **save your script in your home directory**, not inside `/challenge`.
+
+1. Run `nano ~/audit.sh` to open a new, writable script file in the terminal text editor.
+2. Type or paste your Bash script into the editor. If you need help, ask your AI assistant to explain how `nano` works before continuing.
+3. Press **Ctrl+O**, then **Enter**, to save the file. Press **Ctrl+X** to exit.
+4. Run the saved script with `bash ~/audit.sh`. You do not need `chmod +x` when using `bash` to run it.
+5. If your script prints an error, open it again with `nano ~/audit.sh` and investigate the error message.
+
+```bash
+nano ~/audit.sh
+# After saving and exiting nano:
+bash ~/audit.sh
+```
+
+**Important:** In your Bash script, read the source files from `/challenge/common_passwords.txt` and `/challenge/audit_record.txt`, because your script lives in a different directory. You do **not** need to copy or modify the provided files.
+
+If you see **`Error writing audit.sh: Permission denied`**, you likely tried to save it in `/challenge`. Exit the editor without replacing protected files, and use `nano ~/audit.sh` instead.
 
 **Important:** `printf '%s'` avoids adding a newline to a candidate. Hashes depend on the exact input bytes, so using `echo` may give a different result.
 

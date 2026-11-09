@@ -67,6 +67,16 @@ printf '%s' "$found"
             (ROOT / "audit_record.txt").read_text().split("sha256=")[1].splitlines()[0],
         )
 
+    def test_beginner_instructions_use_writable_home_directory(self):
+        description = (ROOT / "DESCRIPTION.md").read_text(encoding="utf-8")
+        self.assertIn("nano ~/audit.sh", description)
+        self.assertIn("bash ~/audit.sh", description)
+        self.assertIn("Ctrl+O", description)
+        self.assertIn("Ctrl+X", description)
+        self.assertIn("/challenge/common_passwords.txt", description)
+        self.assertIn("/challenge/audit_record.txt", description)
+        self.assertNotIn("saved as `audit.sh` in your working directory", description)
+
 
 if __name__ == "__main__":
     unittest.main()
