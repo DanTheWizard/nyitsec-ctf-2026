@@ -1,0 +1,23 @@
+#!/bin/sh
+# Executed by pwn.college as root before this challenge's workspace opens.
+# Alter only this container's system Bash startup file, not a student's
+# persistent ~/.bashrc (which is shared across their challenges).
+set -eu
+
+bashrc=/etc/bashrc
+marker='# NYITSec challenge: start at /challenge'
+
+if [ ! -f "$bashrc" ]; then
+    touch "$bashrc"
+fi
+
+if ! grep -Fq "$marker" "$bashrc"; then
+    cat >> "$bashrc" <<'BASHRC'
+
+# NYITSec challenge: start at /challenge
+# The guard prevents auto-cd in scripts and after intentional navigation.
+if [[ "$-" == *i* && "$PWD" == "/home/hacker" && -d /challenge ]]; then
+    builtin cd /challenge
+fi
+BASHRC
+fi
