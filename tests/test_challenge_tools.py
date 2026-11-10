@@ -29,16 +29,16 @@ class ScaffoldTests(unittest.TestCase):
         self.addCleanup(self.tempdir.cleanup)
         self.root = Path(self.tempdir.name)
         (self.root / "dojo.yml").write_text(
-            "id: example\nmodules:\n  - id: fundamentals\n  - id: hello\n",
+            "id: example\nmodules:\n  - id: linux-cli-intro\n  - id: fundamentals\n",
             encoding="utf-8",
         )
         (self.root / "fundamentals").mkdir()
         (self.root / "fundamentals" / "module.yml").write_text(
             "name: CTF Fundamentals\nchallenges: []\n", encoding="utf-8",
         )
-        (self.root / "hello").mkdir()
-        (self.root / "hello" / "module.yml").write_text(
-            "name: Example\nchallenges: []\n", encoding="utf-8",
+        (self.root / "linux-cli-intro").mkdir()
+        (self.root / "linux-cli-intro" / "module.yml").write_text(
+            "name: Linux Intro\nchallenges: []\n", encoding="utf-8",
         )
 
     def test_scaffolds_existing_module(self):
@@ -80,11 +80,11 @@ class ScaffoldTests(unittest.TestCase):
         self.assertTrue((path / "bin/nyitsec-answer").exists())
         modules = yaml.safe_load((self.root / "dojo.yml").read_text())["modules"]
         self.assertEqual([m["id"] for m in modules],
-                         ["fundamentals", "web-basics", "hello"])
+                         ["linux-cli-intro", "fundamentals", "web-basics"])
 
-    def test_legacy_modules_rejected(self):
+    def test_ungraded_intro_rejected(self):
         with self.assertRaises(ValueError):
-            scaffold.create_challenge(self.root, "hello", "test", "Test")
+            scaffold.create_challenge(self.root, "linux-cli-intro", "test", "Test")
 
     def test_validator_rejects_unfinished_scaffold(self):
         scaffold.create_challenge(self.root, "fundamentals", "pending", "Pending")
