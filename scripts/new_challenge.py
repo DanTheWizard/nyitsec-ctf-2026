@@ -12,7 +12,7 @@ import yaml
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = PROJECT_ROOT / "templates" / "nyitsec-challenge"
-RESERVED_MODULES = {"hello", "world", "demo", "lectures", "linux-cli-intro", "workspace-pilot"}
+RESERVED_MODULES = {"linux-cli-intro"}
 SLUG_RE = re.compile(r"^[a-z][a-z0-9-]*$")
 
 
@@ -37,7 +37,7 @@ def create_challenge(root: Path, module_id: str, challenge_id: str,
             raise ValueError(f"Invalid {label} ID {value!r}. Use lowercase letters, numbers, and hyphens.")
 
     if module_id in RESERVED_MODULES:
-        raise ValueError("Do not add custom challenges inside the preserved example/lecture modules.")
+        raise ValueError("The ungraded Linux & CLI introduction does not accept challenges.")
 
     dojo_file = root / "dojo.yml"
     dojo = load_yaml(dojo_file)
@@ -100,13 +100,8 @@ def create_challenge(root: Path, module_id: str, challenge_id: str,
             f"# {new_module_name}\n\nNYITSec cybersecurity training challenges.\n",
             encoding="utf-8",
         )
-        # Keep new custom modules ahead of upstream example modules.
-        index = next(
-            (i for i, m in enumerate(dojo["modules"])
-             if isinstance(m, dict) and m.get("id") in RESERVED_MODULES),
-            len(dojo["modules"]),
-        )
-        dojo["modules"].insert(index, {"id": module_id})
+        # Keep the optional CLI reading module first; append future CTF modules.
+        dojo["modules"].append({"id": module_id})
         save_yaml(dojo_file, dojo)
 
     return target

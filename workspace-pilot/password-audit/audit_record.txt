@@ -1,4 +1,0 @@
-# NYITSec lab: deliberately weak synthetic credential, offline only
-account=lab-demo
-algorithm=sha256
-sha256=a5ebdb42521ba5a49a0021b4d3173f061c19a9efc484f4e81eb15db85c970213

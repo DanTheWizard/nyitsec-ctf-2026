@@ -8,8 +8,3 @@ image: pwncollege/challenge-simple
 modules:
   - id: linux-cli-intro
   - id: fundamentals
-  - id: workspace-pilot
-  - id: hello
-  - id: world
-  - id: demo
-  - id: lectures

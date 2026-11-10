@@ -1,41 +1,22 @@
 # Base64 Layers: Triple Decode
 
-**Difficulty:** Beginner+ | **Skill:** Repeating a decoding step
+**Goal:** Decode `message.b64`, which has been Base64-encoded **three times**, and find the final answer code.
 
-This time, the NYITSec message has been encoded with Base64 **three times**. Decoding it once will not reveal the final message!
-
-**Your task:** Decode `message.b64` until you can read a normal message containing an **answer code**, then submit that code using the usual NYITSec checker.
-
-Your terminal should start in the writable `/nyitsec-ctf` directory. If it does not, run `cd /nyitsec-ctf`.
-
-### Investigate
+Start in `/nyitsec-ctf`:
 
 ```bash
-ls
 cat message.b64
 base64 -d message.b64
 ```
 
-If the output still looks like Base64, you have only removed one layer. You can repeat the process with intermediate files, or use the **pipe** symbol `|` to send decoded output directly to another command.
+If the result still looks encoded, decode it again.
 
-For example, the command below removes **two** layers:
+**Hint:** The pipe symbol (`|`) sends one command's output into another. For example, two decoding steps can be combined:
 
 ```bash
 base64 -d message.b64 | base64 -d
 ```
 
-How could you remove one more layer?
+Once you find the readable message, run `nyitsec-answer` and enter its answer code. Submit the flag you receive.
 
-### Submit
-
-When the decoded text is readable and displays the answer code, run:
-
-```bash
-nyitsec-answer
-```
-
-The checker reveals your own pwn.college flag if the code is correct.
-
-**Reminder:** Base64 encoding is reversible, and repeated encoding does not make data secure.
-
-**Temporary workspace notice:** `/nyitsec-ctf` is part of the current challenge container and is not persistent. Copy any scripts or notes you want to keep to `~/` before restarting or switching challenges.
+**Temporary workspace notice:** Files saved in `/nyitsec-ctf` disappear when the challenge restarts. Copy important work to `~/`.

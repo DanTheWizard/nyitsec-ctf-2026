@@ -1,30 +1,19 @@
 # {{CHALLENGE_TITLE}}
 
-Welcome to this NYITSec challenge!
+**Goal:** TODO: Describe the student's task and which files to inspect.
 
-**Your terminal should open in the writable `/nyitsec-ctf` workspace.** If not, run `cd /nyitsec-ctf`.
+Your terminal starts in the writable `/nyitsec-ctf` workspace.
 
-## Objective
-
-TODO: Write the student-facing learning goal and describe which provided files to inspect.
-
-## Helpful commands
-
-~~~bash
-pwd
+```bash
 ls
-~~~
+```
 
-## Submit your answer
+When you have the answer, run:
 
-When you have solved the challenge, enter:
-
-~~~bash
+```bash
 nyitsec-answer
-~~~
+```
 
-The command checks your answer and reveals your own pwn.college flag after a correct solution. The protected fallback command is `/challenge/verify`.
+Enter your answer and submit the flag you receive.
 
-**Temporary workspace notice:** Files you create in `/nyitsec-ctf` disappear when you restart or replace the challenge container. Copy any work you want to keep to `~/` first.
-
-**Challenge author:** Replace all draft placeholders before merging. Do not include real credentials or fixed pwn.college flags in the repository.
+**Temporary workspace notice:** Work in `/nyitsec-ctf` is lost when the challenge restarts. Copy anything you want to keep to `~/`.

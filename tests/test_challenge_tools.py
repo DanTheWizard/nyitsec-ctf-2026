@@ -29,16 +29,16 @@ class ScaffoldTests(unittest.TestCase):
         self.addCleanup(self.tempdir.cleanup)
         self.root = Path(self.tempdir.name)
         (self.root / "dojo.yml").write_text(
-            "id: example\nmodules:\n  - id: fundamentals\n  - id: hello\n",
+            "id: example\nmodules:\n  - id: linux-cli-intro\n  - id: fundamentals\n",
             encoding="utf-8",
         )
         (self.root / "fundamentals").mkdir()
         (self.root / "fundamentals" / "module.yml").write_text(
             "name: CTF Fundamentals\nchallenges: []\n", encoding="utf-8",
         )
-        (self.root / "hello").mkdir()
-        (self.root / "hello" / "module.yml").write_text(
-            "name: Example\nchallenges: []\n", encoding="utf-8",
+        (self.root / "linux-cli-intro").mkdir()
+        (self.root / "linux-cli-intro" / "module.yml").write_text(
+            "name: Linux Intro\nchallenges: []\n", encoding="utf-8",
         )
 
     def test_scaffolds_existing_module(self):
@@ -63,8 +63,8 @@ class ScaffoldTests(unittest.TestCase):
         module = yaml.safe_load((self.root / "fundamentals/module.yml").read_text())
         self.assertEqual(module["challenges"][0]["id"], "first-task")
         self.assertEqual(
-            yaml.safe_load((self.root / "dojo.yml").read_text())["modules"][0]["id"],
-            "fundamentals",
+            [m["id"] for m in yaml.safe_load((self.root / "dojo.yml").read_text())["modules"]],
+            ["linux-cli-intro", "fundamentals"],
         )
 
     def test_duplicate_rejected_without_side_effects(self):
@@ -72,7 +72,7 @@ class ScaffoldTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             scaffold.create_challenge(self.root, "fundamentals", "first-task", "First Task")
 
-    def test_creates_module_and_registers_before_examples(self):
+    def test_creates_module_and_appends_after_fundamentals(self):
         path = scaffold.create_challenge(
             self.root, "web-basics", "first-http", "First HTTP",
             new_module_name="Web Security Basics",
@@ -80,11 +80,11 @@ class ScaffoldTests(unittest.TestCase):
         self.assertTrue((path / "bin/nyitsec-answer").exists())
         modules = yaml.safe_load((self.root / "dojo.yml").read_text())["modules"]
         self.assertEqual([m["id"] for m in modules],
-                         ["fundamentals", "web-basics", "hello"])
+                         ["linux-cli-intro", "fundamentals", "web-basics"])
 
-    def test_legacy_modules_rejected(self):
+    def test_ungraded_intro_rejected(self):
         with self.assertRaises(ValueError):
-            scaffold.create_challenge(self.root, "hello", "test", "Test")
+            scaffold.create_challenge(self.root, "linux-cli-intro", "test", "Test")
 
     def test_validator_rejects_unfinished_scaffold(self):
         scaffold.create_challenge(self.root, "fundamentals", "pending", "Pending")
@@ -98,7 +98,7 @@ class ScaffoldTests(unittest.TestCase):
         )
         desc = folder / "DESCRIPTION.md"
         desc.write_text(desc.read_text().replace(
-            "TODO: Write the student-facing learning goal and describe which provided files to inspect.",
+            "TODO: Describe the student's task and which files to inspect.",
             "Practice inspecting a sample file."),
             encoding="utf-8",
         )

@@ -1,8 +1,4 @@
-"""Regression checks for the live migration to /nyitsec-ctf.
-
-The three pilot challenges remain unchanged as a known-good reference while
-five real Fundamentals challenges move to the writable workspace.
-"""
+"""Check the five live Fundamentals challenges and standard writable workspace."""
 
 import hashlib
 from pathlib import Path
@@ -24,11 +20,11 @@ INPUTS = {
 }
 
 
-class WritableWorkspaceMigrationTests(unittest.TestCase):
+class WritableWorkspaceFundamentalsTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         tool = runpy.run_path(
-            str(TEMPLATE / ".workspace.py"), run_name="migration-unit-test"
+            str(TEMPLATE / ".workspace.py"), run_name="fundamentals-unit-test"
         )
         cls.prepare = staticmethod(tool["prepare_workspace"])
 
@@ -92,22 +88,21 @@ class WritableWorkspaceMigrationTests(unittest.TestCase):
         ]
         self.assertEqual(len(solutions), 1)
         checker = runpy.run_path(
-            str(folder / "verify"), run_name="migration-unit-test"
+            str(folder / "verify"), run_name="fundamentals-unit-test"
         )["is_correct"]
         self.assertTrue(checker(solutions[0]))
         self.assertFalse(checker("a wrong guess"))
 
-    def test_pilot_is_retained_for_post_merge_comparison(self):
-        pilot = ROOT / "workspace-pilot"
-        for id in ("incident-id", "base64-basics", "password-audit"):
-            with self.subTest(challenge=id):
-                folder = pilot / id
-                self.assertTrue((folder / ".init").is_file())
-                self.assertIn(b"/nyitsec-ctf", (folder / ".init").read_bytes())
-                self.assertEqual(
-                    (folder / "verify").read_bytes(),
-                    (FUNDAMENTALS / id / "verify").read_bytes()
-                )
+    def test_removed_demos_are_not_registered_or_present(self):
+        import yaml
+        dojo = yaml.safe_load((ROOT / "dojo.yml").read_text())
+        ids = [entry["id"] for entry in dojo["modules"]]
+        self.assertIn("linux-cli-intro", ids)
+        self.assertIn("fundamentals", ids)
+        self.assertEqual(ids[:2], ["linux-cli-intro", "fundamentals"])
+        for name in ("workspace-pilot", "hello", "world", "demo", "lectures"):
+            self.assertNotIn(name, ids)
+            self.assertFalse((ROOT / name).exists(), name)
 
 
 if __name__ == "__main__":
