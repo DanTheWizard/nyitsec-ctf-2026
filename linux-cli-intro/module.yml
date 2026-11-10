@@ -53,7 +53,7 @@ resources:
         | `head filename` | Show the start of a file |
         | `tail filename` | Show the end of a file |
         | `grep 'text' filename` | Find lines containing text |
-        | `find /nyitsec-ctf -type f` | Find files under `/challenge` |
+        | `find /nyitsec-ctf -type f` | Find files under the NYITSec workspace |
         | `command --help` | Show command usage, when supported |
         | `man command` | Read a command's manual, when installed |
         
@@ -89,7 +89,7 @@ resources:
         In **nano**, press **Ctrl+O**, then **Enter** to save, and **Ctrl+X** to exit. The supplied challenge files are already beside your script in `/nyitsec-ctf`, so filenames like `events.log` work directly. **Temporary workspace:** All files in `/nyitsec-ctf` are lost when the challenge container is replaced. Copy important work to `~/` before leaving.
         
         
-        Be careful with file-changing commands like `rm`, `mv`, `chmod`, and shell redirection (`>`). Check what a command will change before running it. **! _Never blindly paste commands you do not understand_ !**.
+        Be careful with file-changing commands like `rm`, `mv`, `chmod`, and shell redirection (`>`). Check what a command will change before running it. **Never blindly paste commands you do not understand.**
         
         **Next:** Move on to the AI guidance below, or jump directly to the first CTF challenge.
   - name: "3. Using AI as a learning assistant"

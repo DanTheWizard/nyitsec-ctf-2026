@@ -1,4 +1,4 @@
-# NYITSec pilot challenge: SSH Log Investigation
+# Author notes: SSH Log Investigation
 
 **Learning goal:** inspect fictional authentication logs and identify the unique row where `service=ssh`, `source=external`, and `status=blocked`.
 

@@ -53,6 +53,6 @@ These checks also run automatically in GitHub Actions. They catch invalid/duplic
 
 Work on a feature branch and submit a PR. Once it is reviewed and merged into `main`, validation must pass before GitHub Actions updates the dojo. Then test the new challenge in a fresh pwn.college workspace, using both wrong and correct answers.
 
-The former pwn.college template modules are retained as references and excluded from the NYITSec convenience enforcement. The `workspace-pilot` module remains available as a temporary live-test comparison until the Fundamentals migration is verified.
+The former pwn.college sample modules and the temporary workspace pilot have been removed following live validation. The ungraded `linux-cli-intro` module is excluded from challenge enforcement.
 
-**Limitation:** The setup happens automatically when you run the generator. If you create a custom challenge manually, the CI validation will require you to add the same files before merge. This avoids modifying upstream examples and challenges that intentionally need another workflow.
+**Limitation:** The setup happens automatically when you run the generator. If you create a custom challenge manually, the CI validation will require you to add the same files before merge. This keeps every new NYITSec challenge consistent with the tested writable workspace.

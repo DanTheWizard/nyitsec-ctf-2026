@@ -6,8 +6,8 @@ These instructions apply to the entire repository, including code produced by Ch
 
 - We maintain the NYITSec 2026 **private** pwn.college dojo in this GitHub repository.
 - Preserve the dojo's YAML ID `example` unless the administrator explicitly migrates the live dojo. The deployed dojo reference is `example~36e653d5`.
-- Preserve the working first challenge and do not modify upstream example modules (`hello`, `world`, `demo`, `lectures`) unless requested.
-- Keep the optional Linux & CLI introduction (`linux-cli-intro`) ungraded.
+- Keep the five working Fundamentals challenges and their protected verification logic intact.
+- Keep the optional Linux & CLI introduction (`linux-cli-intro`) ungraded; do not reintroduce removed sample or pilot modules.
 - Never put dojo update codes, private SSH keys, API tokens, actual passwords, student records, or reusable static pwn.college flags in source control.
 
 ## How to author a new challenge
