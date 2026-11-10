@@ -1,0 +1,8 @@
+NYITSec Evidence Intake (fictional)
+
+Artifact: evidence.jpg
+Review objective: locate any embedded document.
+Tool noted by submitter: steghide
+Extraction passphrase: cookie-jar
+
+The passphrase belongs only to this synthetic training image.

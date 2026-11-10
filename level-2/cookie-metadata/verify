@@ -1,0 +1,32 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+"""Validate the solution code for a fictional NYITSec evidence exercise."""
+
+import hashlib
+import hmac
+from pathlib import Path
+
+EXPECTED_SHA256 = "ed2c4e5fb1a085f8cf8f63cc5b249caceeff913f64b8d84f3edbf878bf1b9d97"
+
+
+def is_correct(answer: str) -> bool:
+    digest = hashlib.sha256(answer.strip().encode("utf-8")).hexdigest()
+    return hmac.compare_digest(digest, EXPECTED_SHA256)
+
+
+def main() -> None:
+    print("NYITSec - More Than a Cookie Recipe")
+    try:
+        answer = input("Enter the hidden case code: ")
+    except EOFError:
+        print("No answer entered.")
+        return
+
+    if is_correct(answer):
+        print("Correct! Your unique pwn.college flag is:")
+        print(Path("/flag").read_text(encoding="utf-8").strip())
+    else:
+        print("That code is not correct. Check your evidence and try again.")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,2 @@
+# Keep the offline bundled tool out of the student's working copies
+.steghide-runtime.tar.gz

@@ -1,0 +1,32 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+"""Validate the solution code for a fictional NYITSec evidence exercise."""
+
+import hashlib
+import hmac
+from pathlib import Path
+
+EXPECTED_SHA256 = "378fa1d0b487746153048331ca2783ba731036dfe8d6cc5d1614d16a4ed7988d"
+
+
+def is_correct(answer: str) -> bool:
+    digest = hashlib.sha256(answer.strip().encode("utf-8")).hexdigest()
+    return hmac.compare_digest(digest, EXPECTED_SHA256)
+
+
+def main() -> None:
+    print("NYITSec - The Photograph's Secret")
+    try:
+        answer = input("Enter the recovered response code: ")
+    except EOFError:
+        print("No answer entered.")
+        return
+
+    if is_correct(answer):
+        print("Correct! Your unique pwn.college flag is:")
+        print(Path("/flag").read_text(encoding="utf-8").strip())
+    else:
+        print("That code is not correct. Check your evidence and try again.")
+
+
+if __name__ == "__main__":
+    main()
