@@ -63,8 +63,8 @@ class ScaffoldTests(unittest.TestCase):
         module = yaml.safe_load((self.root / "fundamentals/module.yml").read_text())
         self.assertEqual(module["challenges"][0]["id"], "first-task")
         self.assertEqual(
-            yaml.safe_load((self.root / "dojo.yml").read_text())["modules"][0]["id"],
-            "fundamentals",
+            [m["id"] for m in yaml.safe_load((self.root / "dojo.yml").read_text())["modules"]],
+            ["linux-cli-intro", "fundamentals"],
         )
 
     def test_duplicate_rejected_without_side_effects(self):
@@ -72,7 +72,7 @@ class ScaffoldTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             scaffold.create_challenge(self.root, "fundamentals", "first-task", "First Task")
 
-    def test_creates_module_and_registers_before_examples(self):
+    def test_creates_module_and_appends_after_fundamentals(self):
         path = scaffold.create_challenge(
             self.root, "web-basics", "first-http", "First HTTP",
             new_module_name="Web Security Basics",
@@ -98,7 +98,7 @@ class ScaffoldTests(unittest.TestCase):
         )
         desc = folder / "DESCRIPTION.md"
         desc.write_text(desc.read_text().replace(
-            "TODO: Write the student-facing learning goal and describe which provided files to inspect.",
+            "TODO: Describe the student's task and which files to inspect.",
             "Practice inspecting a sample file."),
             encoding="utf-8",
         )
