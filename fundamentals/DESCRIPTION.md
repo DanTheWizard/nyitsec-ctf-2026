@@ -1,5 +1,5 @@
-# NYITSec CTF Fundamentals
+# CTF Fundamentals
 
-Welcome to NYITSec's introductory capture-the-flag training.
+Five beginner-friendly challenges covering log investigation, Base64, and an authorized password-strength audit.
 
-Learn to inspect files, explore Linux, and recognize useful evidence in simulated security events. Each exercise runs in an isolated pwn.college workspace and gives the student a platform-generated completion flag.
+Each challenge gives you a temporary, writable `/nyitsec-ctf` directory. Solve the exercise, use `nyitsec-answer`, and submit the flag on pwn.college.

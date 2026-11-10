@@ -1,6 +1,0 @@
-# NYITSec Workspace Pilot: additional exclusions (simple glob patterns)
-# The following files are ALWAYS excluded by .workspace.py:
-# .init, .workspace.py, .ctfignore, verify, bin/, README.md, DESCRIPTION.md
-# One additional filename, path, or directory prefix per line.
-# Examples: *.bak  or  private-notes/
-# Do not use negation (!) rules. This is a pilot, not full gitignore syntax.
