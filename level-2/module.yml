@@ -3,3 +3,7 @@ description: Next-step exercises in recognizing file types, examining artifacts,
 challenges:
   - id: misnamed-image
     name: Hidden in Plain Sight
+  - id: cookie-metadata
+    name: More Than a Cookie Recipe
+  - id: steg-photo
+    name: The Photograph's Secret

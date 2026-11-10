@@ -1,0 +1,23 @@
+#!/bin/sh
+# Run a self-contained copy of steghide entirely as the unprivileged student.
+# The binary is stored in a root-owned, non-executable archive in /challenge.
+set -eu
+
+archive=/challenge/.steghide-runtime.tar.gz
+# Allow the same command to work from a GitHub CI checkout.
+if [ ! -f "$archive" ]; then
+    script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+    archive="$script_dir/../.steghide-runtime.tar.gz"
+fi
+if [ ! -f "$archive" ]; then
+    echo "NYITSec: steghide runtime archive is missing" >&2
+    exit 1
+fi
+
+workdir=$(mktemp -d /tmp/nyitsec-steg.XXXXXX)
+trap 'rm -rf -- "$workdir"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+tar -xzf "$archive" -C "$workdir"
+chmod 700 "$workdir/steghide"
+LD_LIBRARY_PATH="$workdir/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" "$workdir/steghide" "$@"
