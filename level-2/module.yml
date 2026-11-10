@@ -1,0 +1,5 @@
+name: NYITSec CTF Level 2 - Easy
+description: Next-step exercises in recognizing file types, examining artifacts, and investigating unfamiliar evidence.
+challenges:
+  - id: misnamed-image
+    name: Hidden in Plain Sight
