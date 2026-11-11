@@ -109,6 +109,8 @@ class DNSInvestigationTests(unittest.TestCase):
         index, _ = self.query(cname[0][1], "TXT")
         index_text = " ".join(v for _, v in index)
         self.assertIn("parts=3", index_text)
+        self.assertIn("separate subdomain", index_text)
+        self.assertNotIn("part1.vault.archive.nyitsec.test", index_text)
         self.assertIn("ROT13", index_text)
         self.assertIn("Base64", index_text)
 

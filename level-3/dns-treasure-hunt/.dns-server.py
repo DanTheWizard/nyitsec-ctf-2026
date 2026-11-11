@@ -37,6 +37,7 @@ RECORDS = {
     "vault." + ZONE: {
         "TXT": [
             "handoff=index; parts=3; consult part1, part2, part3 below vault",
+            "hint=each part is a separate subdomain of this vault hostname",
             "transform=ROT13; underlying-format=Base64",
         ],
     },
