@@ -207,7 +207,7 @@ class DNSInvestigationTests(unittest.TestCase):
         module = yaml.safe_load((ROOT / "level-3/module.yml").read_text())
         self.assertEqual(
             [c["id"] for c in module["challenges"]],
-            ["forgotten-commit", "dns-treasure-hunt", "suspicious-script", "broken-login"]
+            ["forgotten-commit", "packet-detective", "dns-treasure-hunt", "suspicious-script", "broken-login"]
         )
         instructions = (LAB / "DESCRIPTION.md").read_text()
         self.assertIn("dig @127.0.0.1 -p 5300", instructions)
