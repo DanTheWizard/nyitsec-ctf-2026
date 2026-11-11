@@ -29,6 +29,19 @@ That execution path is harmless, but the lesson is not to rely on executing unkn
 5. Read the resulting Python source as text. Recover the answer string from `analysis_note` and choose the description of **download → decode → in-process execution**.
 6. Run `nyitsec-answer` and provide **option B** plus `IKnowPythonDeobfuscation#404`. Test an incorrect selection with correct string, correct selection with incorrect string, and both incorrect. All must produce the **same generic error**.
 
+## Institutional security/ITS source review
+
+The **exact decoded payload** and a full explanation of the program's
+download, deobfuscation, temporary-file, and execution behavior are committed
+under [`docs/its-review/suspicious-script/`](../../docs/its-review/suspicious-script/README.md).
+These officer/ITS files are deliberately outside `level-3/suspicious-script/`,
+so pwn.college does not stage them into `/challenge` or `/nyitsec-ctf`.
+The automated tests require the GitHub review source to match the embedded
+binary **byte for byte**.
+
+This documentation is provided to facilitate an ITS review, not to assert
+that ITS has approved the activity.
+
 ## Service and safety
 
 - The server binds only to HTTP `127.0.0.1:8876` and serves a single binary path. No external requests, uploads, remote commands, or logging.

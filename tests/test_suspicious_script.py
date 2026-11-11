@@ -81,6 +81,37 @@ class SuspiciousScriptTests(unittest.TestCase):
         self.assertIn(JOKE, reconstructed)
         self.assertIn('if __name__ == "__main__":', reconstructed)
 
+    def test_its_review_source_matches_exact_payload_bytes(self):
+        """The human-readable ITS source must never drift from the real binary."""
+        review_path = (
+            ROOT / "docs" / "its-review" / "suspicious-script"
+            / "recovered_payload.py"
+        )
+        review_source = review_path.read_bytes()
+        self.assertEqual(
+            hashlib.sha256(self.blob).hexdigest(),
+            "b97384863de80d84b7b011943d220df3e2e23f55e4e0d266fc0cfe9f752e1cd8",
+        )
+        self.assertEqual(
+            hashlib.sha256(review_source).hexdigest(),
+            "2d3b191c0db4bda2b59c2396a2ba38455471e5db4b7fab9373fcf09e3eeb7042",
+        )
+        decoder = runpy.run_path(
+            str(LAB / "audit_sync.py"), run_name="analysis_only"
+        )["_q"]
+        self.assertEqual(decoder(self.blob), review_source)
+        recovered_ast = ast.parse(review_source.decode("utf-8"))
+        self.assertFalse(
+            any(isinstance(node, (ast.Import, ast.ImportFrom))
+                for node in ast.walk(recovered_ast)),
+            "The documented recovered payload must not contain imports",
+        )
+        self.assertFalse(review_path.is_relative_to(LAB))
+        self.assertFalse(
+            (LAB / "recovered_payload.py").exists(),
+            "The readable ITS review source must not appear in the challenge folder",
+        )
+
     def test_running_script_officer_only_downloads_blob_and_prints_joke(self):
         with tempfile.TemporaryDirectory() as temp:
             env = os.environ.copy()
