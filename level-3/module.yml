@@ -3,3 +3,5 @@ description: Multi-step investigations combining network protocols, encodings, a
 challenges:
   - id: dns-treasure-hunt
     name: DNS Treasure Hunt
+  - id: suspicious-script
+    name: The Suspicious Script

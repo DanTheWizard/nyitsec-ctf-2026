@@ -25,6 +25,10 @@ DNS_INIT_SUFFIX = (
     b"\n# NYITSec challenge extension: local-dns-service\n"
     b"/bin/sh /challenge/.dns-start.sh\n"
 )
+PAYLOAD_INIT_SUFFIX = (
+    b"\n# NYITSec challenge extension: local-payload-service\n"
+    b"/bin/sh /challenge/.payload-start.sh\n"
+)
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -157,11 +161,33 @@ def check_repository(root: Path) -> list[str]:
                             )
                         )
                     )
+                    is_valid_payload_extension = (
+                        relative == ".init"
+                        and actual_data == expected_data + PAYLOAD_INIT_SUFFIX
+                        and all(
+                            (folder / file).is_file()
+                            for file in (
+                                ".payload-start.sh", ".payload-service.py",
+                                ".payload.bin", "audit_sync.py"
+                            )
+                        )
+                        and all(
+                            item in (
+                                (folder / ".ctfignore").read_text(encoding="utf-8").splitlines()
+                                if (folder / ".ctfignore").is_file() else []
+                            )
+                            for item in (
+                                ".payload-start.sh", ".payload-service.py",
+                                ".payload.bin"
+                            )
+                        )
+                    )
                     if (
                         actual_data != expected_data
                         and not is_valid_web_extension
                         and not is_valid_random_archive_extension
                         and not is_valid_dns_extension
+                        and not is_valid_payload_extension
                     ):
                         errors.append(
                             f"{mid}/{cid}: {relative} differs from standard template; "
