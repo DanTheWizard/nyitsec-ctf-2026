@@ -1,4 +1,4 @@
-# Level 3: Intermediate
+# Intermediate
 
 These investigations require following multiple clues and combining skills from earlier challenges.
 

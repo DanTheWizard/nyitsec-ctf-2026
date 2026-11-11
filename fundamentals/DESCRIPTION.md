@@ -1,4 +1,4 @@
-# CTF Fundamentals
+# Beginner
 
 Five beginner-friendly challenges covering log investigation, Base64, and an authorized password-strength audit.
 

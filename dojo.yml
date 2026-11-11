@@ -1,6 +1,11 @@
 id: example
 name: NYITSec CTF 2026 (Testing)
-description: Hands-on cybersecurity challenges and training for the NYITSec club.
+description: |
+  Welcome to NYITSec's introductory Capture the Flag (CTF) event! Explore hands-on cybersecurity challenges in three difficulty sections: Beginner, Easy, and Intermediate. Topics include Linux, log investigation, digital forensics, networking, and web security.
+
+  Our custom event leaderboard will show points and completed challenges, with an overall ranking and separate rankings for each difficulty section.
+
+  AI tools are allowed and encouraged! Use them to ask questions, learn unfamiliar commands, troubleshoot, and explore solutions. Focus on understanding what you do. You are not expected to finish every challenge during the event. This is an introduction to cybersecurity topics that NYITSec plans to explore further in future events.
 type: hidden
 award:
   emoji: 🛡️

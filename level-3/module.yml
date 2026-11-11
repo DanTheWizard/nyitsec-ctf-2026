@@ -1,4 +1,4 @@
-name: NYITSec CTF Level 3 - Intermediate
+name: Intermediate
 description: Multi-step investigations combining network protocols, encodings, and forensic reasoning.
 challenges:
   - id: forgotten-commit
