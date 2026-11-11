@@ -33,6 +33,11 @@ FORUM_INIT_SUFFIX = (
     b"\n# NYITSec challenge extension: fictional-local-forum\n"
     b"/bin/sh /challenge/.forum-start.sh\n"
 )
+HISTORY_INIT_SUFFIX = (
+    b"\n# NYITSec challenge extension: generated-git-history\n"
+    b"/bin/sh /challenge/.git-prepare.sh\n"
+    b"/usr/local/bin/python -I /challenge/.history-builder.py\n"
+)
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -201,6 +206,29 @@ def check_repository(root: Path) -> list[str]:
                             for item in (".forum-app.py", ".forum-start.sh")
                         )
                     )
+                    is_valid_history_extension = (
+                        relative == ".init"
+                        and actual_data == expected_data + HISTORY_INIT_SUFFIX
+                        and all(
+                            (folder / name).is_file()
+                            for name in (
+                                ".history-builder.py", ".git-prepare.sh",
+                                ".git-runtime.tar.gz", ".git-runtime-packages.txt",
+                                "bin/git",
+                            )
+                        )
+                        and all(
+                            name in (
+                                (folder / ".ctfignore").read_text(encoding="utf-8").splitlines()
+                                if (folder / ".ctfignore").is_file() else []
+                            )
+                            for name in (
+                                ".history-builder.py", ".git-prepare.sh",
+                                ".git-runtime.tar.gz", ".git-runtime-packages.txt",
+                            )
+                        )
+                        and (folder / "bin/git").stat().st_mode & stat.S_IXUSR
+                    )
                     if (
                         actual_data != expected_data
                         and not is_valid_web_extension
@@ -208,6 +236,7 @@ def check_repository(root: Path) -> list[str]:
                         and not is_valid_dns_extension
                         and not is_valid_payload_extension
                         and not is_valid_forum_extension
+                        and not is_valid_history_extension
                     ):
                         errors.append(
                             f"{mid}/{cid}: {relative} differs from standard template; "
