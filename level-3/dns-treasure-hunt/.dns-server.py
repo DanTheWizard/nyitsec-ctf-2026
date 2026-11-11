@@ -13,7 +13,7 @@ HOST = "127.0.0.1"
 PORT = 5300
 ZONE = "archive.nyitsec.test"
 
-# The three pieces are ROT13 applied to the Base64 encoding of the code.
+# The three pieces are ROT13 applied to the Base64 encoding of a natural-language message.
 # They deliberately reside at *different DNS names*, not one TXT answer.
 RECORDS = {
     ZONE: {
@@ -37,17 +37,17 @@ RECORDS = {
     "vault." + ZONE: {
         "TXT": [
             "handoff=index; parts=3; consult part1, part2, part3 below vault",
-            "decoding=undo ROT13, then decode Base64",
+            "transform=ROT13; underlying-format=Base64",
         ],
     },
     "part1.vault." + ZONE: {
-        "TXT": ["part=1/3; data=GyyWISASDl1R"],
+        "TXT": ["part=1/3; data=ITuyVUWyMPOfLJ"],
     },
     "part2.vault." + ZONE: {
-        "TXT": ["part=2/3; data=GyZgISWSDIAI"],
+        "TXT": ["part=2/3; data=50MKWhVUqunKEmV"],
     },
     "part3.vault." + ZONE: {
-        "TXT": ["part=3/3; data=HxHgZwNlAt=="],
+        "TXT": ["part=3/3; data=TW5VUEbMFObLKWvo3V="],
     },
     # Deliberately unrelated records for realistic background activity.
     "www." + ZONE: {
@@ -195,9 +195,11 @@ def create_server(host=HOST, port=PORT):
 def main():
     server = create_server()
     if os.geteuid() == 0:
+        import pwd
+        user = pwd.getpwnam("hacker")
         os.setgroups([])
-        os.setgid(1000)
-        os.setuid(1000)
+        os.setgid(user.pw_gid)
+        os.setuid(user.pw_uid)
     server.serve_forever(poll_interval=0.2)
 
 
