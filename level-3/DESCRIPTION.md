@@ -1,9 +1,11 @@
 # Level 3: Intermediate
 
-These investigations involve following several clues rather than solving everything with a single command.
+These investigations require following multiple clues and combining skills from earlier challenges.
 
-Start with **DNS Treasure Hunt**, an isolated DNS investigation that uses multiple record types and an encoded message.
+Begin with **The Forgotten Commit**, a fictional Git repository where you recover a deleted file by examining its history.
+
+Then move to **DNS Treasure Hunt**, an isolated DNS investigation involving several record types and an encoded message.
 
 Next, **The Suspicious Script** challenges you to trace a localhost download, recover encoded Python source, and explain its behavior without blindly executing it.
 
-Finally, **The Broken Login** offers a fictional NYITSec forum where you investigate unsafe SQL queries, test account access, and retrieve a simulated shutdown password.
+Finally, **The Broken Login** offers a fictional NYITSec forum where you investigate intentionally unsafe SQL queries and retrieve a simulated shutdown password.

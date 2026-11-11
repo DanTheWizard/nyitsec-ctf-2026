@@ -70,6 +70,12 @@ Any intentionally unsafe SQL must interact **only** with a freshly seeded, dispo
 
 The server implementation must be listed in `.ctfignore`. Preserve GitHub review documentation in `docs/its-review/` for NYITSec officers and ITS. This documentation supports a security review but does not constitute institutional authorization.
 
+### Generated Git-history challenges
+
+When students need an authentic deleted-file investigation, preserve the standard initializer and append only `HISTORY_INIT_SUFFIX` from `scripts/validate_dojo.py`. The root-owned `/challenge/.history-builder.py` generates the full multi-commit Git repository **after** `/nyitsec-ctf` is prepared, then hands the working tree and Git object database to the unprivileged `hacker` account. Do not overwrite existing student files. Avoid network clones, real account identities, or production secrets.
+
+Git is not guaranteed in the pwn.college base tool list. This lab supplies a **genuine offline Git executable** via `/challenge/bin/git` and a bundled runtime extracted once under disposable `/run/nyitsec-git`. All generator and package files must be excluded from the student workspace using `.ctfignore`. Leave the source and package provenance in GitHub for NYITSec/ITS reviewers, and test both real Git history recovery and reset behavior.
+
 ## Checks and deployment
 
 ~~~bash

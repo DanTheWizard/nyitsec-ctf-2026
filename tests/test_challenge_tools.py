@@ -275,6 +275,48 @@ class ScaffoldTests(unittest.TestCase):
             issues,
         )
 
+    def test_validator_accepts_protected_git_history_setup(self):
+        folder = scaffold.create_challenge(
+            self.root, "fundamentals", "git-history", "Git History",
+        )
+        for item in (
+            ".history-builder.py", ".git-prepare.sh",
+            ".git-runtime.tar.gz", ".git-runtime-packages.txt",
+        ):
+            (folder / item).write_text("# fictional training source\n")
+        (folder / "bin/git").write_text("#!/bin/sh\n")
+        (folder / "bin/git").chmod(0o755)
+        ignores = folder / ".ctfignore"
+        ignores.write_text(
+            ignores.read_text() +
+            "\n.history-builder.py\n.git-prepare.sh\n.git-runtime.tar.gz\n"
+            ".git-runtime-packages.txt\n"
+        )
+        init = folder / ".init"
+        init.write_bytes(init.read_bytes() + validate.HISTORY_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertFalse(
+            any(".init differs from standard template" in issue for issue in issues),
+            issues,
+        )
+
+    def test_validator_rejects_unprotected_git_history_setup(self):
+        folder = scaffold.create_challenge(
+            self.root, "fundamentals", "bad-git-history", "Bad Git History",
+        )
+        for item in (
+            ".history-builder.py", ".git-prepare.sh",
+            ".git-runtime.tar.gz", ".git-runtime-packages.txt",
+        ):
+            (folder / item).write_text("# fictional training source\n")
+        (folder / "bin/git").write_text("#!/bin/sh\n")
+        init = folder / ".init"
+        init.write_bytes(init.read_bytes() + validate.HISTORY_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertTrue(
+            any(".init differs from standard template" in issue for issue in issues)
+        )
+
     def test_validator_rejects_duplicate_yaml_keys(self):
         (self.root / "fundamentals/module.yml").write_text(
             "name: Intro\nname: Duplicate\nchallenges: []\n", encoding="utf-8",
