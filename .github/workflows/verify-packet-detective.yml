@@ -1,0 +1,44 @@
+name: Verify Packet Detective with tshark
+
+on:
+  pull_request:
+    paths:
+      - level-3/packet-detective/**
+      - tools/build_packet_detective_pcap.mjs
+      - .github/workflows/verify-packet-detective.yml
+  push:
+    branches:
+      - main
+    paths:
+      - level-3/packet-detective/**
+      - tools/build_packet_detective_pcap.mjs
+
+permissions:
+  contents: read
+
+jobs:
+  dissect-capture:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Wireshark command line utilities for CI only
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y tshark
+      - name: Check reproducibility and real HTTP protocol dissection
+        run: |
+          set -eu
+          pcap=level-3/packet-detective/traffic.pcap
+          node tools/build_packet_detective_pcap.mjs --check
+          capinfos "$pcap"
+          tshark -r "$pcap" -Y 'http.request' -T fields -e tcp.stream -e http.request.method -e http.request.uri > /tmp/nyitsec-http-requests.txt
+          cat /tmp/nyitsec-http-requests.txt
+          test "$(wc -l < /tmp/nyitsec-http-requests.txt)" -eq 20
+          test "$(tshark -r "$pcap" -Y 'http.request.method == "POST"' -T fields -e tcp.stream | wc -l)" -ge 7
+          tshark -r "$pcap" -Y 'http.request.uri contains "CASE-417"' -T fields -e http.request.uri | grep -F CASE-417
+          target=$(tshark -r "$pcap" -Y 'http.request && http contains "LAB-7B"' -T fields -e tcp.stream | head -n 1)
+          test -n "$target"
+          tshark -r "$pcap" -q -z "follow,tcp,ascii,$target" > /tmp/nyitsec-target-stream.txt
+          grep -F 'POST /api/login' /tmp/nyitsec-target-stream.txt
+          grep -F 'X-Lab-Trace: LAB-7B' /tmp/nyitsec-target-stream.txt
+          grep -F '%26' /tmp/nyitsec-target-stream.txt
