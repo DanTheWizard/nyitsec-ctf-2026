@@ -56,6 +56,12 @@ When a challenge needs an isolated DNS server, keep the standard workspace initi
 
 The local source and offline `dig` bundle must be excluded from student workspace copies using `.ctfignore`. Provide a student-friendly `dig` command without depending on apt or external services. Keep solution text out of the student description and ordinary input files.
 
+### Suspicious-script investigation challenges
+
+For a fictional encoded-payload investigation, preserve the standard workspace initializer and append the exact `PAYLOAD_INIT_SUFFIX` from `scripts/validate_dojo.py`. The root-owned server file `.payload-service.py`, its startup script `.payload-start.sh`, and its binary `.payload.bin` must exist and be excluded from the student workspace with `.ctfignore`. Students should receive only the suspicious-looking client script under `/nyitsec-ctf`.
+
+The service must bind to localhost and operate on synthetic data. Avoid real malicious behavior, remote destinations, persistent filesystem changes, or hidden user data collection. The student should be able to decode the data statically without executing unknown code. For two-part questions, only reveal the pwn.college flag when both parts are correct and use the same generic error for any failure.
+
 ## Checks and deployment
 
 ~~~bash

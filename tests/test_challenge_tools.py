@@ -208,6 +208,43 @@ class ScaffoldTests(unittest.TestCase):
             any(".init differs from standard template" in item for item in issues)
         )
 
+    def test_validator_accepts_complete_local_payload_service(self):
+        folder = scaffold.create_challenge(
+            self.root, "fundamentals", "payload-lab", "Payload Lab",
+        )
+        (folder / ".payload-service.py").write_text("# HTTP service\n")
+        (folder / ".payload-start.sh").write_text("# startup\n")
+        (folder / ".payload.bin").write_bytes(b"LAB1example")
+        (folder / "audit_sync.py").write_text("# student-visible script\n")
+        ignore = folder / ".ctfignore"
+        ignore.write_text(
+            ignore.read_text() +
+            "\n.payload-service.py\n.payload-start.sh\n.payload.bin\n"
+        )
+        init = folder / ".init"
+        init.write_bytes(init.read_bytes() + validate.PAYLOAD_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertFalse(
+            any(".init differs from standard template" in problem for problem in issues),
+            issues,
+        )
+
+    def test_validator_rejects_leaked_local_payload_service(self):
+        folder = scaffold.create_challenge(
+            self.root, "fundamentals", "leaky-payload", "Leaky Payload",
+        )
+        (folder / ".payload-service.py").write_text("# HTTP service\n")
+        (folder / ".payload-start.sh").write_text("# startup\n")
+        (folder / ".payload.bin").write_bytes(b"LAB1example")
+        (folder / "audit_sync.py").write_text("# student-visible script\n")
+        init = folder / ".init"
+        init.write_bytes(init.read_bytes() + validate.PAYLOAD_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertTrue(
+            any(".init differs from standard template" in issue for issue in issues),
+            issues,
+        )
+
     def test_validator_rejects_duplicate_yaml_keys(self):
         (self.root / "fundamentals/module.yml").write_text(
             "name: Intro\nname: Duplicate\nchallenges: []\n", encoding="utf-8",
