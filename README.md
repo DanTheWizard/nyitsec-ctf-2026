@@ -7,7 +7,7 @@ Source code for the private [NYITSec pwn.college dojo](https://pwn.college/examp
 - **Linux & CLI Quick Start (Optional):** Three short, ungraded guides to terminal commands, reading files, and responsible AI assistance.
 - **CTF Fundamentals:** Five beginner challenges covering SSH logs, Base64 decoding, and a synthetic password-strength audit.
 - **CTF Level 2 - Easy:** File-format investigation, concealed evidence, image steganography, a fictional localhost website, and a randomized archive-search challenge.
-- **CTF Level 3 - Intermediate:** DNS Treasure Hunt and The Suspicious Script, combining network investigation, encoded data, Python static analysis, and multi-part verification.
+- **CTF Level 3 - Intermediate:** DNS Treasure Hunt, The Suspicious Script, and The Broken Login, combining networking, Python analysis, and an intentionally vulnerable fictional SQL injection forum.
 
 Students work in a writable, temporary `/nyitsec-ctf` directory. Each challenge provides a `nyitsec-answer` command to check their answer and reveal their own pwn.college flag. The protected verifier stays under `/challenge`.
 

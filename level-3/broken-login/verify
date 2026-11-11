@@ -1,0 +1,31 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+"""Validate the nuke authorization password from the fictional forum."""
+
+import hashlib
+import hmac
+from pathlib import Path
+
+EXPECTED_SHA256 = "10c392dd4c9a519049aab3e79184c1ab4d43b0187d39db96fd2f7297fd6e663e"
+
+
+def is_correct(answer: str) -> bool:
+    digest = hashlib.sha256(answer.strip().encode("utf-8")).hexdigest()
+    return hmac.compare_digest(digest, EXPECTED_SHA256)
+
+
+def main() -> None:
+    print("NYITSec - The Broken Login")
+    try:
+        answer = input("Enter the Nuke authorization password: ")
+    except EOFError:
+        print("No password entered.")
+        return
+    if is_correct(answer):
+        print("Correct! Here is your unique pwn.college flag:")
+        print(Path("/flag").read_text(encoding="utf-8").strip())
+    else:
+        print("Incorrect authorization password. Review the forum and try again.")
+
+
+if __name__ == "__main__":
+    main()

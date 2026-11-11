@@ -1,0 +1,3 @@
+# The local forum server and startup remain protected; do not stage these files.
+.forum-app.py
+.forum-start.sh

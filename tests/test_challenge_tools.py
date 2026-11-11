@@ -245,6 +245,36 @@ class ScaffoldTests(unittest.TestCase):
             issues,
         )
 
+    def test_validator_accepts_isolated_local_forum_extension(self):
+        folder = scaffold.create_challenge(
+            self.root, "fundamentals", "safe-forum", "Safe Forum",
+        )
+        (folder / ".forum-app.py").write_text("# fictional localhost server\n")
+        (folder / ".forum-start.sh").write_text("# localhost initialization\n")
+        ignore = folder / ".ctfignore"
+        ignore.write_text(ignore.read_text() + "\n.forum-app.py\n.forum-start.sh\n")
+        init = folder / ".init"
+        init.write_bytes(init.read_bytes() + validate.FORUM_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertFalse(
+            any(".init differs from standard template" in problem for problem in issues),
+            issues,
+        )
+
+    def test_validator_rejects_unexcluded_forum_server(self):
+        folder = scaffold.create_challenge(
+            self.root, "fundamentals", "exposed-forum", "Exposed Forum",
+        )
+        (folder / ".forum-app.py").write_text("# fictional localhost server\n")
+        (folder / ".forum-start.sh").write_text("# localhost initialization\n")
+        init = folder / ".init"
+        init.write_bytes(init.read_bytes() + validate.FORUM_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertTrue(
+            any(".init differs from standard template" in problem for problem in issues),
+            issues,
+        )
+
     def test_validator_rejects_duplicate_yaml_keys(self):
         (self.root / "fundamentals/module.yml").write_text(
             "name: Intro\nname: Duplicate\nchallenges: []\n", encoding="utf-8",
