@@ -1,0 +1,31 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+"""Verify the decoded DNS message without a predictable NYITSec-style code."""
+
+import hashlib
+import hmac
+from pathlib import Path
+
+EXPECTED_SHA256 = "c559df2cb09fffd35004814f60207ef0b9996b1bae9c7122c0d8b542c35935ef"
+
+
+def is_correct(answer: str) -> bool:
+    digest = hashlib.sha256(answer.strip().casefold().encode("utf-8")).hexdigest()
+    return hmac.compare_digest(digest, EXPECTED_SHA256)
+
+
+def main() -> None:
+    print("NYITSec - DNS Treasure Hunt")
+    try:
+        answer = input("Enter the recovered message: ")
+    except EOFError:
+        print("No answer entered.")
+        return
+    if is_correct(answer):
+        print("Correct! Your unique pwn.college flag is:")
+        print(Path("/flag").read_text(encoding="utf-8").strip())
+    else:
+        print("That message did not match the recovered evidence.")
+
+
+if __name__ == "__main__":
+    main()

@@ -9,4 +9,5 @@ modules:
   - id: linux-cli-intro
   - id: fundamentals
   - id: level-2
+  - id: level-3
   - id: blackout-pilot

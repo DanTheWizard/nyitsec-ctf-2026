@@ -1,0 +1,5 @@
+name: NYITSec CTF Level 3 - Intermediate
+description: Multi-step investigations combining network protocols, encodings, and forensic reasoning.
+challenges:
+  - id: dns-treasure-hunt
+    name: DNS Treasure Hunt

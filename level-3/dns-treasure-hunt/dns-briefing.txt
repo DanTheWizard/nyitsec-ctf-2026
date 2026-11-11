@@ -1,0 +1,13 @@
+NYITSec fictional DNS forensics briefing
+
+DNS host: 127.0.0.1
+DNS UDP port: 5300
+Starting domain: archive.nyitsec.test
+
+All records belong to an isolated training-only DNS service. Some are
+ordinary decoys. Follow records that reference other hostnames.
+
+Useful record types include: TXT (text), MX (mail host), CNAME (alias),
+A (IPv4 address), and NS (name server).
+
+The domain uses the reserved .test namespace. Never query a real target.

@@ -1,0 +1,4 @@
+# Keep the implementation and offline dig bundle out of student files.
+.dns-server.py
+.dns-start.sh
+.dig-runtime.tar.gz
