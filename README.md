@@ -36,7 +36,3 @@ python3 -m unittest discover -s tests -v
 Pull requests automatically run these checks. Merging into `main` triggers the dojo update workflow.
 
 The dojo's base YAML ID is `example` and its assigned pwn.college reference is `example~36e653d5`. Deployments require the GitHub Actions repository secret `UPDATE_CODE`. **Never commit or share the update code, private update URL, or student flags.**
-
-## Operation Blackout progression-lock pilot (not live until merged)
-
-A temporary, three-stage module in `blackout-pilot/` exercises pwn.college's `progression_locked: true` gating. See [the pilot test plan](./blackout-pilot/PILOT_TEST_PLAN.md). The pilot is unweighted; tournament scoring and completion bonuses are not implemented here.
