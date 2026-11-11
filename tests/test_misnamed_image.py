@@ -57,8 +57,9 @@ class MisnamedImageTests(unittest.TestCase):
 
     def test_level_2_is_after_fundamentals_and_workspace_is_standard(self):
         config = yaml.safe_load((ROOT / "dojo.yml").read_text())
+        # Preserve the original training order while allowing new modules.
         self.assertEqual(
-            [m["id"] for m in config["modules"]],
+            [m["id"] for m in config["modules"][:3]],
             ["linux-cli-intro", "fundamentals", "level-2"],
         )
         module = yaml.safe_load((ROOT / "level-2" / "module.yml").read_text())
