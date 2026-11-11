@@ -114,7 +114,7 @@ class SteghideEvidenceTests(unittest.TestCase):
         module = yaml.safe_load((ROOT / "level-2" / "module.yml").read_text())
         self.assertEqual(
             [x["id"] for x in module["challenges"]],
-            ["misnamed-image", "cookie-metadata", "steg-photo", "inspect-source"],
+            ["misnamed-image", "cookie-metadata", "steg-photo", "inspect-source", "forgotten-file"],
         )
         cookie_desc = (COOKIE / "DESCRIPTION.md").read_text()
         self.assertNotIn("strings", cookie_desc.lower())

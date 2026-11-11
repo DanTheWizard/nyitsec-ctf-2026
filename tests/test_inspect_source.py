@@ -180,7 +180,7 @@ class InspectSourceTests(unittest.TestCase):
         module = yaml.safe_load((ROOT / "level-2/module.yml").read_text())
         self.assertEqual(
             [entry["id"] for entry in module["challenges"]],
-            ["misnamed-image", "cookie-metadata", "steg-photo", "inspect-source"],
+            ["misnamed-image", "cookie-metadata", "steg-photo", "inspect-source", "forgotten-file"],
         )
 
 

@@ -148,6 +148,31 @@ class ScaffoldTests(unittest.TestCase):
             any(".init differs from standard template" in problem for problem in issues)
         )
 
+    def test_validator_accepts_controlled_random_archive_init(self):
+        path = scaffold.create_challenge(
+            self.root, "fundamentals", "random-archive", "Random Archive",
+        )
+        (path / ".scatter.py").write_text("# synthetic generator\n", encoding="utf-8")
+        ignore = path / ".ctfignore"
+        ignore.write_text(ignore.read_text() + "\n.scatter.py\n")
+        init = path / ".init"
+        init.write_bytes(init.read_bytes() + validate.RANDOM_ARCHIVE_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertFalse(
+            any(".init differs from standard template" in problem for problem in issues),
+            issues,
+        )
+
+    def test_validator_rejects_unexcluded_random_generator(self):
+        path = scaffold.create_challenge(
+            self.root, "fundamentals", "leaky-archive", "Leaky Archive",
+        )
+        (path / ".scatter.py").write_text("# synthetic generator\n", encoding="utf-8")
+        init = path / ".init"
+        init.write_bytes(init.read_bytes() + validate.RANDOM_ARCHIVE_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertTrue(any(".init differs from standard template" in p for p in issues))
+
     def test_validator_rejects_duplicate_yaml_keys(self):
         (self.root / "fundamentals/module.yml").write_text(
             "name: Intro\nname: Duplicate\nchallenges: []\n", encoding="utf-8",
