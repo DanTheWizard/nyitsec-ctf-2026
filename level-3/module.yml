@@ -1,6 +1,8 @@
 name: NYITSec CTF Level 3 - Intermediate
 description: Multi-step investigations combining network protocols, encodings, and forensic reasoning.
 challenges:
+  - id: forgotten-commit
+    name: The Forgotten Commit
   - id: dns-treasure-hunt
     name: DNS Treasure Hunt
   - id: suspicious-script

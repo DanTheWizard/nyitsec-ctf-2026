@@ -1,0 +1,31 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+"""Check the handoff phrase recovered from the missing fictional Git ledger."""
+
+import hashlib
+import hmac
+from pathlib import Path
+
+EXPECTED_SHA256 = "1b29b0a146c235e31ddada2353828683d2b1a306c4e49282f15dd2b617e2d1d0"
+
+
+def is_correct(answer: str) -> bool:
+    digest = hashlib.sha256(answer.strip().casefold().encode("utf-8")).hexdigest()
+    return hmac.compare_digest(digest, EXPECTED_SHA256)
+
+
+def main() -> None:
+    print("NYITSec - The Forgotten Commit")
+    try:
+        answer = input("Enter the approved recovery phrase: ")
+    except EOFError:
+        print("No recovery phrase entered.")
+        return
+    if is_correct(answer):
+        print("Correct! Your unique pwn.college flag is:")
+        print(Path("/flag").read_text(encoding="utf-8").strip())
+    else:
+        print("That is not the approved recovery phrase. Check the repository history.")
+
+
+if __name__ == "__main__":
+    main()

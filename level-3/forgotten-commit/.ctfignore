@@ -1,0 +1,2 @@
+# Do not stage the Git-history solution generator into student files.
+.history-builder.py
