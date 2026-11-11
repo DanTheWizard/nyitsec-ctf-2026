@@ -99,6 +99,24 @@ resources:
         
         You can ask an AI assistant (such as ChatGPT) to **explain**, **teach**, and **debug** Linux commands. The goal is to understand your actions, not just obtain a flag. Participation does not require AI.
         
+        ### Built-in pwn.college help: SENSAI
+        
+        **[SENSAI](https://pwn.college/sensai)** is pwn.college's optional AI assistant. It can use information about your **currently running challenge**, including your terminal and filesystem context, to help explain what you are seeing. You do not need a separate AI account.
+        
+        To use SENSAI:
+        
+        1. **Start a challenge** so SENSAI has an active workspace to help with.
+        2. Click **Help** in pwn.college's top navigation bar to open SENSAI, or visit the [SENSAI page](https://pwn.college/sensai).
+        3. Ask for a **hint, explanation, or troubleshooting step** based on what you are investigating. SENSAI may understand the current challenge and your files, so you often do not have to paste the entire problem.
+        4. Test the advice yourself and make sure you understand the command or concept before continuing.
+        
+        **Example SENSAI prompt:**
+        
+        > I'm doing the NYITSec challenge and I'm stuck. Explain what I should look for next, one step at a time, without giving me the flag or solving the whole investigation.
+        
+        SENSAI is optional. You can still use ChatGPT or other AI assistants for learning in this dojo. **Do not put real passwords, personal data, or sensitive information into your training workspace or an AI chat.**
+
+        
         ### Good prompts to try
         
         **Understand a command**
