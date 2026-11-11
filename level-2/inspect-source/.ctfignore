@@ -1,0 +1,3 @@
+# Keep the website implementation outside the student workspace.
+.website.py
+.website-start.sh

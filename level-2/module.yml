@@ -7,3 +7,5 @@ challenges:
     name: More Than a Cookie Recipe
   - id: steg-photo
     name: The Photograph's Secret
+  - id: inspect-source
+    name: Inspect the Source
