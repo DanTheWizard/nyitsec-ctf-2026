@@ -63,7 +63,7 @@ class InspectSourceTests(unittest.TestCase):
             self.assertIn("Harborview Learning Center", "".join(text.content))
             self.assertNotIn(CODE, "".join(text.content))
             self.assertIn(CODE, "\n".join(text.comments))
-            self.assertIn("HTML comments are public", "\n".join(text.comments))
+            self.assertIn("HTML source comments are public", "\n".join(text.comments))
 
             with urllib.request.urlopen(url + "/index.html", timeout=3) as response:
                 self.assertEqual(response.status, 200)
