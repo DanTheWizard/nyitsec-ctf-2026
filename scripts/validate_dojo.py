@@ -21,6 +21,10 @@ RANDOM_ARCHIVE_INIT_SUFFIX = (
     b"chmod 600 /challenge/.scatter.py\n"
     b"/usr/local/bin/python -I /challenge/.scatter.py\n"
 )
+DNS_INIT_SUFFIX = (
+    b"\n# NYITSec challenge extension: local-dns-service\n"
+    b"/bin/sh /challenge/.dns-start.sh\n"
+)
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -135,10 +139,29 @@ def check_repository(root: Path) -> list[str]:
                             if (folder / ".ctfignore").is_file() else []
                         )
                     )
+                    is_valid_dns_extension = (
+                        relative == ".init"
+                        and actual_data == expected_data + DNS_INIT_SUFFIX
+                        and (folder / ".dns-start.sh").is_file()
+                        and (folder / ".dns-server.py").is_file()
+                        and (folder / ".dig-runtime.tar.gz").is_file()
+                        and (folder / "bin/dig").is_file()
+                        and all(
+                            item in (
+                                (folder / ".ctfignore").read_text(encoding="utf-8").splitlines()
+                                if (folder / ".ctfignore").is_file() else []
+                            )
+                            for item in (
+                                ".dns-start.sh", ".dns-server.py",
+                                ".dig-runtime.tar.gz", ".dig-runtime-packages.txt"
+                            )
+                        )
+                    )
                     if (
                         actual_data != expected_data
                         and not is_valid_web_extension
                         and not is_valid_random_archive_extension
+                        and not is_valid_dns_extension
                     ):
                         errors.append(
                             f"{mid}/{cid}: {relative} differs from standard template; "
