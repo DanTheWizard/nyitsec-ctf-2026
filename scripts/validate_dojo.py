@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXEMPT_MODULES = {"linux-cli-intro"}
 EXECUTABLES = (".init", "verify", "bin/nyitsec-answer")
 REQUIRED_FILES = (*EXECUTABLES, ".workspace.py", ".ctfignore", "DESCRIPTION.md", "README.md")
-# The only approved per-challenge initialization extension currently supported.
+# Approved per-challenge startup extensions; each must match byte-for-byte.
 WEB_INIT_SUFFIX = (b"\n# NYITSec challenge extension: web-service\n"
                    b"/bin/sh /challenge/.website-start.sh\n")
 RANDOM_ARCHIVE_INIT_SUFFIX = (
@@ -28,6 +28,10 @@ DNS_INIT_SUFFIX = (
 PAYLOAD_INIT_SUFFIX = (
     b"\n# NYITSec challenge extension: local-payload-service\n"
     b"/bin/sh /challenge/.payload-start.sh\n"
+)
+FORUM_INIT_SUFFIX = (
+    b"\n# NYITSec challenge extension: fictional-local-forum\n"
+    b"/bin/sh /challenge/.forum-start.sh\n"
 )
 
 
@@ -182,12 +186,28 @@ def check_repository(root: Path) -> list[str]:
                             )
                         )
                     )
+                    is_valid_forum_extension = (
+                        relative == ".init"
+                        and actual_data == expected_data + FORUM_INIT_SUFFIX
+                        and all(
+                            (folder / item).is_file()
+                            for item in (".forum-app.py", ".forum-start.sh")
+                        )
+                        and all(
+                            item in (
+                                (folder / ".ctfignore").read_text(encoding="utf-8").splitlines()
+                                if (folder / ".ctfignore").is_file() else []
+                            )
+                            for item in (".forum-app.py", ".forum-start.sh")
+                        )
+                    )
                     if (
                         actual_data != expected_data
                         and not is_valid_web_extension
                         and not is_valid_random_archive_extension
                         and not is_valid_dns_extension
                         and not is_valid_payload_extension
+                        and not is_valid_forum_extension
                     ):
                         errors.append(
                             f"{mid}/{cid}: {relative} differs from standard template; "
