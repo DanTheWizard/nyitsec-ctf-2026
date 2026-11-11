@@ -224,8 +224,20 @@ class PacketDetectiveTests(unittest.TestCase):
             (ROOT / "docs/its-review/packet-detective/README.md").is_file()
         )
         self.assertTrue(
-            (ROOT / "tools/build_packet_detective_pcap.py").is_file()
+            (ROOT / "tools/build_packet_detective_pcap.mjs").is_file()
         )
+
+    @unittest.skipUnless(shutil.which("node"), "Node.js unavailable for authoring check")
+    def test_capture_matches_reproducible_authoring_generator(self):
+        command = subprocess.run(
+            [
+                "node", str(ROOT / "tools/build_packet_detective_pcap.mjs"),
+                "--check",
+            ],
+            capture_output=True, text=True, timeout=15,
+        )
+        self.assertEqual(command.returncode, 0, command.stderr)
+        self.assertIn("matches", command.stdout)
 
     def test_level_three_challenge_is_second(self):
         module = yaml.safe_load((ROOT / "level-3/module.yml").read_text())

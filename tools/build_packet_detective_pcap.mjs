@@ -2,7 +2,7 @@
 // Deterministic, self-contained PCAP authoring program for NYITSec.
 // Writes an offline synthetic capture without opening network sockets.
 // All users, passwords, hosts, and addresses are fictional lab examples.
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, fileURLToPath } from "node:url";
 
 function buildPcap() {
@@ -103,5 +103,15 @@ function buildPcap() {
 const outfile = new URL("../level-3/packet-detective/traffic.pcap", import.meta.url);
 mkdirSync(dirname(fileURLToPath(outfile)), { recursive: true });
 const bytes = buildPcap();
-writeFileSync(outfile, bytes);
-console.log("Built fictional HTTP capture:", bytes.length, "bytes");
+if (process.argv.includes("--check")) {
+  const existing = readFileSync(outfile);
+  if (!Buffer.from(bytes).equals(existing)) {
+    console.error("Packet Detective PCAP differs from its source generator");
+    process.exitCode = 1;
+  } else {
+    console.log("Packet Detective PCAP matches its source generator");
+  }
+} else {
+  writeFileSync(outfile, bytes);
+  console.log("Built fictional HTTP capture:", bytes.length, "bytes");
+}

@@ -29,7 +29,7 @@ Students who use a different valid investigative workflow should also receive cr
 ## Source, deployment and ITS transparency
 
 - The packet file is **generated once in the GitHub authoring workflow** and committed to this repository. A new challenge instance simply copies `traffic.pcap` and `incident-brief.txt` into `/nyitsec-ctf`, using the standard NYITSec template `.init` and `.workspace.py`.
-- The reproducible capture generator is `tools/build_packet_detective_pcap.py`, **outside** the deployable challenge directory. Its only output is a file on disk, not network packets sent to real hosts.
+- The dependency-free Node.js authoring generator is `tools/build_packet_detective_pcap.mjs`, **outside** the deployable challenge directory. Its only output is a file on disk, not network packets sent to real hosts.
 - The GitHub-only source is not staged for students, but is available for NYITSec and ITS review. See `docs/its-review/packet-detective/README.md`.
 - There are no services, open ports, external downloads, package installations, privileged network interfaces, or modifications to student home settings.
 - The student VM already provides Wireshark and tshark. The binary capture is fictional and self-contained.
