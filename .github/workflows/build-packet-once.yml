@@ -1,0 +1,45 @@
+name: Build synthetic Packet Detective capture (one time)
+
+on:
+  push:
+    branches:
+      - feat/level3-packet-detective
+    paths:
+      - tools/build_packet_detective_pcap.py
+      - .github/workflows/build-packet-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install authoring and verification tools
+        run: |
+          python3 -m pip install --break-system-packages scapy
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y tshark
+      - name: Generate synthetic capture
+        run: python3 tools/build_packet_detective_pcap.py
+      - name: Validate Wireshark dissection and separated evidence
+        run: |
+          set -eu
+          capture=level-3/packet-detective/traffic.pcap
+          capinfos "$capture"
+          tshark -r "$capture" -Y 'http.request.method == "POST"' -T fields -e tcp.stream -e http.request.uri > /tmp/nyitsec-posts.txt
+          cat /tmp/nyitsec-posts.txt
+          test "$(wc -l < /tmp/nyitsec-posts.txt)" -ge 7
+          tshark -r "$capture" -Y 'http.request.uri contains "CASE-417"' -T fields -e http.request.uri | grep -F CASE-417
+          tshark -r "$capture" -Y 'http.request && http contains "LAB-7B"' -T fields -e tcp.stream | grep -E '[0-9]+'
+          test "$(tshark -r "$capture" -Y 'tcp.analysis.flags' | wc -l)" -eq 0
+      - name: Commit only the validated PCAP
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add level-3/packet-detective/traffic.pcap
+          git commit -m "Bundle synthetic multi-stream HTTP evidence for Packet Detective"
+          git push origin HEAD:feat/level3-packet-detective
