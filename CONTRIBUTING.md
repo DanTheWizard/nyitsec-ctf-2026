@@ -62,6 +62,14 @@ For a fictional encoded-payload investigation, preserve the standard workspace i
 
 The service must bind to localhost and operate on synthetic data. Avoid real malicious behavior, remote destinations, persistent filesystem changes, or hidden user data collection. The student should be able to decode the data statically without executing unknown code. For two-part questions, only reveal the pwn.college flag when both parts are correct and use the same generic error for any failure.
 
+### Isolated SQL injection forum challenges
+
+For an authorized fictional web-security exercise, preserve the standard writable workspace initializer and append the exact `FORUM_INIT_SUFFIX` from `scripts/validate_dojo.py`. The `/challenge/.forum-start.sh` script configures the **container-only** `nyitsecwebsite.test` loopback hostname and starts `/challenge/.forum-app.py` without adding files to the student's workspace.
+
+Any intentionally unsafe SQL must interact **only** with a freshly seeded, disposable demonstration database, never real services or organizational records. Run the server as a separate unprivileged account, avoid student-accessible database storage, do not collect actual email addresses or credentials, and make the simulated destructive operations restorable with Reset Challenge.
+
+The server implementation must be listed in `.ctfignore`. Preserve GitHub review documentation in `docs/its-review/` for NYITSec officers and ITS. This documentation supports a security review but does not constitute institutional authorization.
+
 ## Checks and deployment
 
 ~~~bash
