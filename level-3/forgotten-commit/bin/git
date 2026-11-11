@@ -1,0 +1,30 @@
+#!/bin/sh
+# Genuine Git for the isolated CTF, works without apt or external access.
+set -eu
+
+if [ -x /usr/bin/git ] && [ "${NYITSEC_FORCE_BUNDLED_GIT:-0}" != "1" ]; then
+    exec /usr/bin/git "$@"
+fi
+
+runtime=/run/nyitsec-git
+if [ ! -x "$runtime/git" ]; then
+    # A temporary extraction for offline CI tests. The pwn.college .init
+    # always extracts the archive once to /run/nyitsec-git instead.
+    archive=/challenge/.git-runtime.tar.gz
+    if [ ! -f "$archive" ]; then
+        script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+        archive="$script_dir/../.git-runtime.tar.gz"
+    fi
+    if [ ! -f "$archive" ]; then
+        echo "NYITSec: offline Git runtime missing" >&2
+        exit 1
+    fi
+    runtime=$(mktemp -d /tmp/nyitsec-git.XXXXXX)
+    trap 'rm -rf -- "$runtime"' EXIT
+    tar -xzf "$archive" -C "$runtime"
+fi
+
+LD_LIBRARY_PATH="$runtime/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
+GIT_EXEC_PATH="$runtime/libexec" \
+GIT_TEMPLATE_DIR="$runtime/templates" \
+"$runtime/git" "$@"
