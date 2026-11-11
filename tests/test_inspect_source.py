@@ -1,7 +1,7 @@
 """Test the isolated Level 2 website and its approved startup extension."""
 
 from html.parser import HTMLParser
-from http.server import HTTPServer
+import socket
 from pathlib import Path
 import hashlib
 import re
@@ -48,7 +48,7 @@ class VisibleTextParser(HTMLParser):
 class InspectSourceTests(unittest.TestCase):
     def test_serves_page_and_secret_only_in_comment(self):
         website = runpy.run_path(str(CHALLENGE / ".website.py"), run_name="unit-test")
-        server = HTTPServer(("127.0.0.1", 0), website["SiteHandler"])
+        server = website["create_server"](port=0)
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
         try:
@@ -71,6 +71,45 @@ class InspectSourceTests(unittest.TestCase):
                 urllib.request.urlopen(url + "/.website.py", timeout=3)
             self.assertEqual(raised.exception.code, 404)
         finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=3)
+
+    def test_idle_firefox_connection_does_not_block_another_request(self):
+        """An accepted TCP connection with no HTTP request cannot stall the site."""
+        website = runpy.run_path(
+            str(CHALLENGE / ".website.py"), run_name="unit-test"
+        )
+        server = website["create_server"](port=0)
+        accepted = threading.Event()
+        accept_original = server.get_request
+
+        def signal_accept():
+            connection = accept_original()
+            accepted.set()
+            return connection
+
+        server.get_request = signal_accept
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        idle = None
+        try:
+            host, port = server.server_address
+            idle = socket.create_connection((host, port), timeout=3)
+            self.assertTrue(
+                accepted.wait(timeout=2),
+                "The idle browser connection must be accepted before the GET",
+            )
+            # The first socket intentionally sends nothing. HTTPServer would
+            # block in its request handler here until that socket is closed.
+            with urllib.request.urlopen(
+                f"http://{host}:{port}/", timeout=2
+            ) as response:
+                self.assertEqual(response.status, 200)
+                self.assertIn(b"Harborview Learning Center", response.read())
+        finally:
+            if idle is not None:
+                idle.close()
             server.shutdown()
             server.server_close()
             thread.join(timeout=3)
