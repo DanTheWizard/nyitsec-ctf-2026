@@ -1,0 +1,11 @@
+name: "Operation Blackout - Progress Lock Pilot"
+description: "Three brief, synthetic exercises used to test server-side sequential challenge unlocking. Not an official scored round."
+challenges:
+  - id: signal-intercept
+    name: "1. Signal Intercept"
+  - id: incident-investigation
+    name: "2. Incident Investigation"
+    progression_locked: true
+  - id: restore-communications
+    name: "3. Restore Communications"
+    progression_locked: true

@@ -1,0 +1,43 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+"""Stage 2: verify the unique suspicious synthetic SSH event ID."""
+import hmac
+from pathlib import Path
+
+
+def expected_answer():
+    try:
+        matches = []
+        for line in Path("/challenge/access.log").read_text(encoding="utf-8").splitlines():
+            fields = dict(token.split("=", 1) for token in line.split() if "=" in token)
+            attempts = int(fields.get("attempts", "0"))
+            if (fields.get("service") == "ssh"
+                    and fields.get("network") == "external"
+                    and fields.get("outcome") == "blocked"
+                    and attempts >= 10
+                    and fields.get("event_id")):
+                matches.append(fields["event_id"])
+        return matches[0] if len(matches) == 1 else None
+    except (OSError, UnicodeError, ValueError):
+        return None
+
+
+def is_correct(answer):
+    expected = expected_answer()
+    return bool(expected) and hmac.compare_digest(answer.strip().casefold(), expected.casefold())
+
+
+def main():
+    try:
+        answer = input("Suspicious event ID: ")
+    except EOFError:
+        print("No answer provided.")
+        return
+    if is_correct(answer):
+        print("Correct. Submit this unique pwn.college flag on the challenge page:")
+        print(Path("/flag").read_text(encoding="utf-8").strip())
+    else:
+        print("Incorrect. Review all the log conditions and try again.")
+
+
+if __name__ == "__main__":
+    main()
