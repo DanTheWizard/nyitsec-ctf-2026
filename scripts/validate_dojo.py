@@ -13,6 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 EXEMPT_MODULES = {"linux-cli-intro"}
 EXECUTABLES = (".init", "verify", "bin/nyitsec-answer")
 REQUIRED_FILES = (*EXECUTABLES, ".workspace.py", ".ctfignore", "DESCRIPTION.md", "README.md")
+# The only approved per-challenge initialization extension currently supported.
+WEB_INIT_SUFFIX = (b"\n# NYITSec challenge extension: web-service\n"
+                   b"/bin/sh /challenge/.website-start.sh\n")
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -110,7 +113,15 @@ def check_repository(root: Path) -> list[str]:
                 actual = folder / relative
                 expected = ROOT / "templates" / "nyitsec-challenge" / relative
                 if actual.is_file() and expected.is_file():
-                    if actual.read_bytes() != expected.read_bytes():
+                    actual_data = actual.read_bytes()
+                    expected_data = expected.read_bytes()
+                    is_valid_web_extension = (
+                        relative == ".init"
+                        and actual_data == expected_data + WEB_INIT_SUFFIX
+                        and (folder / ".website-start.sh").is_file()
+                        and (folder / ".website.py").is_file()
+                    )
+                    if actual_data != expected_data and not is_valid_web_extension:
                         errors.append(
                             f"{mid}/{cid}: {relative} differs from standard template; "
                             "use scripts/new_challenge.py or update the shared template"

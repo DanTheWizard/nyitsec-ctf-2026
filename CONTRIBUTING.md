@@ -42,6 +42,10 @@ The startup hook is **challenge-container local**, not a change to student persi
 
 To customize the files being staged, add extra patterns to the challenge's `.ctfignore`. This supports simple filename globs and directory exclusions, not full Gitignore syntax or negation rules. The core protected exclusions cannot be overridden.
 
+### Local web-service challenges
+
+For an exercise that needs a browser-visible localhost service, preserve the canonical `.init` and append **only** the approved `WEB_INIT_SUFFIX` from `scripts/validate_dojo.py`. Put startup instructions in `/challenge/.website-start.sh` and the server in `/challenge/.website.py`; exclude both in `.ctfignore` so students inspect the HTTP page rather than source files. The default verifier and writable-workspace files remain unchanged. Avoid modifying persistent home settings or allowing the service to accept external traffic. Review local web services for unsafe request handlers before merging.
+
 ## Checks and deployment
 
 ~~~bash

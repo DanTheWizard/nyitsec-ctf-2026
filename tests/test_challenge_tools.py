@@ -123,6 +123,31 @@ class ScaffoldTests(unittest.TestCase):
         issues = validate.check_repository(self.root)
         self.assertTrue(any(".init differs from standard template" in x for x in issues))
 
+    def test_validator_accepts_controlled_web_init_extension(self):
+        path = scaffold.create_challenge(
+            self.root, "fundamentals", "local-site", "Local Site",
+        )
+        (path / ".website.py").write_text("# test site\n", encoding="utf-8")
+        (path / ".website-start.sh").write_text("# test startup\n", encoding="utf-8")
+        init = path / ".init"
+        init.write_bytes(init.read_bytes() + validate.WEB_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertFalse(
+            any(".init differs from standard template" in problem for problem in issues),
+            issues,
+        )
+
+    def test_validator_rejects_web_init_when_setup_file_missing(self):
+        path = scaffold.create_challenge(
+            self.root, "fundamentals", "missing-site", "Missing Site",
+        )
+        init = path / ".init"
+        init.write_bytes(init.read_bytes() + validate.WEB_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertTrue(
+            any(".init differs from standard template" in problem for problem in issues)
+        )
+
     def test_validator_rejects_duplicate_yaml_keys(self):
         (self.root / "fundamentals/module.yml").write_text(
             "name: Intro\nname: Duplicate\nchallenges: []\n", encoding="utf-8",
