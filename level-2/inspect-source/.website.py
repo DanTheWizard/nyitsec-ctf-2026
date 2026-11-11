@@ -6,7 +6,7 @@ student working copies and made root-readable by .website-start.sh.
 The server drops privileges before accepting requests.
 """
 
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import os
 
 HOST = "127.0.0.1"
@@ -125,8 +125,14 @@ class SiteHandler(BaseHTTPRequestHandler):
         pass
 
 
+def create_server(host=HOST, port=PORT):
+    # Firefox may open TCP connections before sending requests. The threaded
+    # server keeps an idle browser connection from blocking other visitors.
+    return ThreadingHTTPServer((host, port), SiteHandler)
+
+
 def main():
-    server = HTTPServer((HOST, PORT), SiteHandler)
+    server = create_server()
     if os.geteuid() == 0:
         # Root is only needed by .init to launch a protected source file.
         # HTTP handling runs without privileged permissions.
