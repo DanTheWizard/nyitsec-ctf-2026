@@ -7,10 +7,10 @@ copied to /nyitsec-ctf; only its generated Git working tree is student-owned.
 import os
 from pathlib import Path
 import pwd
-import shutil
 import subprocess
 
 DESTINATION = Path("/nyitsec-ctf/night-relay")
+GIT_COMMAND = str(Path(__file__).resolve().parent / "bin" / "git")
 LEDGER = "config/recovery-ledger.toml"
 RECOVERY_PHRASE = "Paper satellites still orbit"
 
@@ -37,7 +37,7 @@ def git(repo, *args, environment=None):
     if environment:
         env.update(environment)
     proc = subprocess.run(
-        ["git", "-C", str(repo), *args], check=True, text=True,
+        [GIT_COMMAND, "-C", str(repo), *args], check=True, text=True,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env, timeout=8,
     )
     return proc.stdout.strip()
@@ -68,8 +68,8 @@ def build_history(repo: Path, uid=None, gid=None):
         raise ValueError("The project path must be absolute and safe")
     if repo.exists():
         raise FileExistsError("Refusing to overwrite an existing Git project")
-    if shutil.which("git") is None:
-        raise RuntimeError("The Git CLI must be installed in the workspace")
+    if not Path(GIT_COMMAND).is_file():
+        raise RuntimeError("The bundled Git launcher must be present")
     repo.mkdir(mode=0o700, parents=True)
     git(repo, "init", "--initial-branch=main", "-q")
     write(repo, ".gitignore", "*.tmp\n__pycache__/\n")
