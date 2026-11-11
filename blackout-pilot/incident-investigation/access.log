@@ -1,5 +1,0 @@
-2026-11-10T14:00:10Z event_id=EVT-102 service=ssh network=internal outcome=allowed attempts=1
-2026-11-10T14:02:10Z event_id=EVT-203 service=web network=external outcome=blocked attempts=14
-2026-11-10T14:04:21Z event_id=EVT-217 service=ssh network=external outcome=blocked attempts=15
-2026-11-10T14:05:03Z event_id=EVT-301 service=ssh network=external outcome=allowed attempts=1
-2026-11-10T14:06:30Z event_id=EVT-409 service=ssh network=external outcome=blocked attempts=2
