@@ -9,3 +9,5 @@ challenges:
     name: The Photograph's Secret
   - id: inspect-source
     name: Inspect the Source
+  - id: forgotten-file
+    name: The Forgotten File
