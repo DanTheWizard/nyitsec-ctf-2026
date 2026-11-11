@@ -1,0 +1,25 @@
+#!/bin/sh
+# Genuine ISC dig packaged offline because the base workspace lacks it.
+set -eu
+
+if [ -x /usr/bin/dig ] && [ "${NYITSEC_FORCE_BUNDLED_DIG:-0}" != "1" ]; then
+    exec /usr/bin/dig "$@"
+fi
+
+archive=/challenge/.dig-runtime.tar.gz
+if [ ! -f "$archive" ]; then
+    script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+    archive="$script_dir/../.dig-runtime.tar.gz"
+fi
+if [ ! -f "$archive" ]; then
+    echo "NYITSec: offline dig runtime is missing" >&2
+    exit 1
+fi
+
+workdir=$(mktemp -d /tmp/nyitsec-dig.XXXXXX)
+trap 'rm -rf -- "$workdir"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+tar -xzf "$archive" -C "$workdir"
+chmod 700 "$workdir/dig"
+LD_LIBRARY_PATH="$workdir/lib" "$workdir/dig" "$@"

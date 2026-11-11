@@ -50,6 +50,12 @@ For an exercise that needs a browser-visible localhost service, preserve the can
 
 For a challenge that generates a new file layout on every instance, keep the standard workspace initializer as a prefix and append **only** the approved `RANDOM_ARCHIVE_INIT_SUFFIX` from `scripts/validate_dojo.py`. A root-owned `/challenge/.scatter.py` runs after the writable workspace is prepared, and it must be listed in `.ctfignore` so solution-generation code is not copied into student files. The generator must not overwrite an existing workspace, must assign generated files to `hacker`, and must not print the randomized answer location during startup.
 
+### Local DNS investigation challenges
+
+When a challenge needs an isolated DNS server, keep the standard workspace initializer and append the exact `DNS_INIT_SUFFIX` from `scripts/validate_dojo.py`. Run a local authoritative UDP service from `/challenge/.dns-server.py` through `/challenge/.dns-start.sh`, bind only to localhost, drop root privileges, and wait for a real DNS reply before accepting the challenge start.
+
+The local source and offline `dig` bundle must be excluded from student workspace copies using `.ctfignore`. Provide a student-friendly `dig` command without depending on apt or external services. Keep solution text out of the student description and ordinary input files.
+
 ## Checks and deployment
 
 ~~~bash

@@ -173,6 +173,41 @@ class ScaffoldTests(unittest.TestCase):
         issues = validate.check_repository(self.root)
         self.assertTrue(any(".init differs from standard template" in p for p in issues))
 
+    def test_validator_accepts_local_dns_service_extension(self):
+        folder = scaffold.create_challenge(
+            self.root, "fundamentals", "dns-lab", "DNS Lab",
+        )
+        (folder / ".dns-server.py").write_text("# synthetic DNS server\n")
+        (folder / ".dns-start.sh").write_text("# startup\n")
+        (folder / ".dig-runtime.tar.gz").write_bytes(b"test-bundle")
+        (folder / "bin/dig").write_text("#!/bin/sh\n")
+        ignores = folder / ".ctfignore"
+        ignores.write_text(
+            ignores.read_text() +
+            "\n.dns-server.py\n.dns-start.sh\n"
+            ".dig-runtime.tar.gz\n.dig-runtime-packages.txt\n"
+        )
+        init = folder / ".init"
+        init.write_bytes(init.read_bytes() + validate.DNS_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertFalse(
+            any(".init differs from standard template" in item for item in issues),
+            issues,
+        )
+
+    def test_validator_rejects_unbundled_dns_extension(self):
+        folder = scaffold.create_challenge(
+            self.root, "fundamentals", "incomplete-dns", "Incomplete DNS",
+        )
+        (folder / ".dns-server.py").write_text("# synthetic DNS server\n")
+        (folder / ".dns-start.sh").write_text("# startup\n")
+        init = folder / ".init"
+        init.write_bytes(init.read_bytes() + validate.DNS_INIT_SUFFIX)
+        issues = validate.check_repository(self.root)
+        self.assertTrue(
+            any(".init differs from standard template" in item for item in issues)
+        )
+
     def test_validator_rejects_duplicate_yaml_keys(self):
         (self.root / "fundamentals/module.yml").write_text(
             "name: Intro\nname: Duplicate\nchallenges: []\n", encoding="utf-8",
