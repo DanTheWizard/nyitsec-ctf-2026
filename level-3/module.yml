@@ -3,6 +3,8 @@ description: Multi-step investigations combining network protocols, encodings, a
 challenges:
   - id: forgotten-commit
     name: The Forgotten Commit
+  - id: packet-detective
+    name: Packet Detective
   - id: dns-treasure-hunt
     name: DNS Treasure Hunt
   - id: suspicious-script

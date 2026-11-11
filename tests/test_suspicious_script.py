@@ -207,7 +207,7 @@ class SuspiciousScriptTests(unittest.TestCase):
         module = yaml.safe_load((ROOT / "level-3/module.yml").read_text())
         self.assertEqual(
             [item["id"] for item in module["challenges"]],
-            ["forgotten-commit", "dns-treasure-hunt", "suspicious-script", "broken-login"],
+            ["forgotten-commit", "packet-detective", "dns-treasure-hunt", "suspicious-script", "broken-login"],
         )
         instructions = (LAB / "DESCRIPTION.md").read_text()
         self.assertIn("/nyitsec-ctf", instructions)

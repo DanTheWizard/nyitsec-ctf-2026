@@ -76,6 +76,12 @@ When students need an authentic deleted-file investigation, preserve the standar
 
 Git is not guaranteed in the pwn.college base tool list. This lab supplies a **genuine offline Git executable** via `/challenge/bin/git` and a bundled runtime extracted once under disposable `/run/nyitsec-git`. All generator and package files must be excluded from the student workspace using `.ctfignore`. Leave the source and package provenance in GitHub for NYITSec/ITS reviewers, and test both real Git history recovery and reset behavior.
 
+### Static HTTP packet-capture challenges
+
+For a packet-analysis exercise, stage only a **synthetic, prerecorded `.pcap` file** and a fictional incident briefing. Students can analyze it offline with Wireshark or `tshark`, without sniffing live traffic or receiving privileges for network capture. No extra `.init` startup extension is required: the standard NYITSec workspace copier handles the static inputs.
+
+Keep the deterministic packet-capture generator and its source **outside** the challenge folder, under `tools/`, so source code and officer solutions do not reach `/nyitsec-ctf`. Store review notes under `docs/its-review/` and add tests that parse the PCAP, correlate the correct conversation among decoys, and validate the recovered answer. Use only `.test` hostnames, documentation IP addresses and invented training credentials.
+
 ## Checks and deployment
 
 ~~~bash

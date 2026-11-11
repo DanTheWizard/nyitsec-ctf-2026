@@ -177,7 +177,7 @@ class ForgottenCommitTests(unittest.TestCase):
         module = yaml.safe_load((ROOT / "level-3/module.yml").read_text())
         self.assertEqual(
             [entry["id"] for entry in module["challenges"]],
-            ["forgotten-commit", "dns-treasure-hunt", "suspicious-script",
+            ["forgotten-commit", "packet-detective", "dns-treasure-hunt", "suspicious-script",
              "broken-login"],
         )
         self.assertTrue(

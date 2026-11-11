@@ -1,0 +1,28 @@
+NYITSec Packet Detective
+Incident CASE-417
+=================
+
+A fictional helpdesk received a report that a demo user submitted a login
+form to the RelayDesk training portal over unencrypted HTTP.
+
+Your task is to identify the specific form submission associated with
+this incident and recover the username and password carried in the request.
+
+The team captured a short network recording. It contains unrelated pages,
+several other demo-user sign-ins, and other HTTP requests.
+
+Analyst's lead:
+* An HTTP request to the helpdesk's /tickets/CASE-417 path was captured.
+* The ticket's HTTP RESPONSE contains a trace reference linking this case
+  to one request at the fictional RelayDesk portal.
+* Investigate the corresponding HTTP POST. Inspect its full TCP stream.
+* Web forms may use application/x-www-form-urlencoded data. Special
+  characters can look different on the wire.
+
+This is a completely synthetic packet capture. Every account, credential,
+domain, and IP address is fictional. Do not test these details against any
+real site or send requests to any captured IP addresses.
+
+Capture: traffic.pcap
+Tools: Wireshark or tshark (both available in the challenge VM)
+No live server or internet access is needed.

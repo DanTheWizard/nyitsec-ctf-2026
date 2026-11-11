@@ -1,0 +1,37 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+"""Check both fictional HTTP form fields recovered from the packet capture."""
+
+import hashlib
+import hmac
+from pathlib import Path
+
+USERNAME_SHA256 = "81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9"
+PASSWORD_SHA256 = "1284b042d5e0b83ad7ccf6fb489006c3d5e4a70ad4904cd6dc56b58065b41005"
+
+
+def is_correct(username: str, password: str) -> bool:
+    name_hash = hashlib.sha256(username.strip().casefold().encode("utf-8")).hexdigest()
+    password_hash = hashlib.sha256(password.strip().encode("utf-8")).hexdigest()
+    good_name = hmac.compare_digest(name_hash, USERNAME_SHA256)
+    good_password = hmac.compare_digest(password_hash, PASSWORD_SHA256)
+    # No clue about which field was wrong.
+    return bool(good_name & good_password)
+
+
+def main() -> None:
+    print("NYITSec - Packet Detective")
+    try:
+        username = input("Recovered HTTP username: ")
+        password = input("Recovered HTTP password: ")
+    except EOFError:
+        print("One or more values do not match the evidence. Keep investigating.")
+        return
+    if is_correct(username, password):
+        print("Correct! Your unique pwn.college flag is:")
+        print(Path("/flag").read_text(encoding="utf-8").strip())
+    else:
+        print("One or more values do not match the evidence. Keep investigating.")
+
+
+if __name__ == "__main__":
+    main()
