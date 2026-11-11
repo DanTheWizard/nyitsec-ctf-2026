@@ -5,9 +5,11 @@ Source code for the private [NYITSec pwn.college dojo](https://pwn.college/examp
 ## Training modules
 
 - **Linux & CLI Quick Start (Optional):** Three short, ungraded guides to terminal commands, reading files, and responsible AI assistance.
-- **CTF Fundamentals:** Five beginner challenges covering SSH logs, Base64 decoding, and a synthetic password-strength audit.
-- **CTF Level 2 - Easy:** File-format investigation, concealed evidence, image steganography, a fictional localhost website, and a randomized archive-search challenge.
-- **CTF Level 3 - Intermediate:** The Forgotten Commit (Git history recovery), Packet Detective (HTTP capture analysis), DNS Treasure Hunt, The Suspicious Script, and The Broken Login, progressing from local repository investigation to networking, Python analysis, and a fictional SQL injection forum.
+- **Beginner:** Five beginner challenges covering SSH logs, Base64 decoding, and a synthetic password-strength audit.
+- **Easy:** File-format investigation, concealed evidence, image steganography, a fictional localhost website, and a randomized archive-search challenge.
+- **Intermediate:** The Forgotten Commit (Git history recovery), Packet Detective (HTTP capture analysis), DNS Treasure Hunt, The Suspicious Script, and The Broken Login, progressing from local repository investigation to networking, Python analysis, and a fictional SQL injection forum.
+
+The event's custom leaderboard is planned to report overall points and completed challenges alongside separate Beginner, Easy, and Intermediate rankings. AI tools are permitted and encouraged for learning and problem-solving; students are not expected to finish every challenge during the session. These exercises introduce topics for future NYITSec events.
 
 Students work in a writable, temporary `/nyitsec-ctf` directory. Each challenge provides a `nyitsec-answer` command to check their answer and reveal their own pwn.college flag. The protected verifier stays under `/challenge`.
 

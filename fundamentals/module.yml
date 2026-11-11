@@ -1,4 +1,5 @@
-name: NYITSec CTF Fundamentals
+name: Beginner
+description: Start here for foundational Linux, log investigation, encoding, and a synthetic password audit.
 challenges:
   - id: incident-id
     name: First Incident - SSH Log Investigation
