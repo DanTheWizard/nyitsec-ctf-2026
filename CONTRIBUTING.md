@@ -46,6 +46,10 @@ To customize the files being staged, add extra patterns to the challenge's `.ctf
 
 For an exercise that needs a browser-visible localhost service, preserve the canonical `.init` and append **only** the approved `WEB_INIT_SUFFIX` from `scripts/validate_dojo.py`. Put startup instructions in `/challenge/.website-start.sh` and the server in `/challenge/.website.py`; exclude both in `.ctfignore` so students inspect the HTTP page rather than source files. The default verifier and writable-workspace files remain unchanged. Avoid modifying persistent home settings or allowing the service to accept external traffic. Review local web services for unsafe request handlers before merging.
 
+### Randomized archive-search challenges
+
+For a challenge that generates a new file layout on every instance, keep the standard workspace initializer as a prefix and append **only** the approved `RANDOM_ARCHIVE_INIT_SUFFIX` from `scripts/validate_dojo.py`. A root-owned `/challenge/.scatter.py` runs after the writable workspace is prepared, and it must be listed in `.ctfignore` so solution-generation code is not copied into student files. The generator must not overwrite an existing workspace, must assign generated files to `hacker`, and must not print the randomized answer location during startup.
+
 ## Checks and deployment
 
 ~~~bash

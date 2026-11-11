@@ -1,0 +1,2 @@
+# Synthetic archive generator must not be copied into the workspace.
+.scatter.py

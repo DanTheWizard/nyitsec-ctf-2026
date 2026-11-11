@@ -1,0 +1,32 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+"""Verify the code found in the synthetic randomized document archive."""
+
+import hashlib
+import hmac
+from pathlib import Path
+
+EXPECTED_SHA256 = "665b10c867a6b8f95afb6e53f8a86df72763f5a8b8b2972a8e0e934df6b94a79"
+
+
+def is_correct(answer: str) -> bool:
+    digest = hashlib.sha256(answer.strip().encode("utf-8")).hexdigest()
+    return hmac.compare_digest(digest, EXPECTED_SHA256)
+
+
+def main() -> None:
+    print("NYITSec - The Forgotten File")
+    try:
+        answer = input("Enter the recovered case code: ")
+    except EOFError:
+        print("No answer entered.")
+        return
+
+    if is_correct(answer):
+        print("Correct! Your unique pwn.college flag is:")
+        print(Path("/flag").read_text(encoding="utf-8").strip())
+    else:
+        print("That code is not correct. Search the archived documents and try again.")
+
+
+if __name__ == "__main__":
+    main()
