@@ -6,7 +6,7 @@ Source code for the private [NYITSec pwn.college dojo](https://pwn.college/examp
 
 - **Linux & CLI Quick Start (Optional):** Three short, ungraded guides to terminal commands, reading files, and responsible AI assistance.
 - **CTF Fundamentals:** Five beginner challenges covering SSH logs, Base64 decoding, and a synthetic password-strength audit.
-- **CTF Level 2 - Easy:** File-format investigation, a cookie recipe containing concealed evidence, and a photo with a steganographically hidden note. Students learn to inspect files beyond their visible contents.
+- **CTF Level 2 - Easy:** File-format investigation, concealed evidence in a recipe, image steganography, and a fictional localhost website with a clue in its HTML source.
 
 Students work in a writable, temporary `/nyitsec-ctf` directory. Each challenge provides a `nyitsec-answer` command to check their answer and reveal their own pwn.college flag. The protected verifier stays under `/challenge`.
 
