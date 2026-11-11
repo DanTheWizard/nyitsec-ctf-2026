@@ -16,6 +16,11 @@ REQUIRED_FILES = (*EXECUTABLES, ".workspace.py", ".ctfignore", "DESCRIPTION.md",
 # The only approved per-challenge initialization extension currently supported.
 WEB_INIT_SUFFIX = (b"\n# NYITSec challenge extension: web-service\n"
                    b"/bin/sh /challenge/.website-start.sh\n")
+RANDOM_ARCHIVE_INIT_SUFFIX = (
+    b"\n# NYITSec challenge extension: randomized-file-search\n"
+    b"chmod 600 /challenge/.scatter.py\n"
+    b"/usr/local/bin/python -I /challenge/.scatter.py\n"
+)
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -121,7 +126,20 @@ def check_repository(root: Path) -> list[str]:
                         and (folder / ".website-start.sh").is_file()
                         and (folder / ".website.py").is_file()
                     )
-                    if actual_data != expected_data and not is_valid_web_extension:
+                    is_valid_random_archive_extension = (
+                        relative == ".init"
+                        and actual_data == expected_data + RANDOM_ARCHIVE_INIT_SUFFIX
+                        and (folder / ".scatter.py").is_file()
+                        and ".scatter.py" in (
+                            (folder / ".ctfignore").read_text(encoding="utf-8").splitlines()
+                            if (folder / ".ctfignore").is_file() else []
+                        )
+                    )
+                    if (
+                        actual_data != expected_data
+                        and not is_valid_web_extension
+                        and not is_valid_random_archive_extension
+                    ):
                         errors.append(
                             f"{mid}/{cid}: {relative} differs from standard template; "
                             "use scripts/new_challenge.py or update the shared template"
