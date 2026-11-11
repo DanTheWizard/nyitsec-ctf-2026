@@ -1,0 +1,4 @@
+# Keep server implementation and the distributed binary out of the student workspace.
+.payload-service.py
+.payload-start.sh
+.payload.bin

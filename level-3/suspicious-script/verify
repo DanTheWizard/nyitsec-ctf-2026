@@ -1,0 +1,50 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+"""Verify both code-analysis reasoning and the extracted review answer."""
+
+import hashlib
+import hmac
+from pathlib import Path
+
+ANSWER_SHA256 = "439d96bda83f7460f48ad72a49b15c38d731e1f1b235b93bd15e83946510e2b6"
+BEHAVIOR_SHA256 = "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c"
+
+OPTIONS = (
+    ("A", "Downloads and decodes a source file, saves the decoded source, and stops before evaluating it."),
+    ("B", "Downloads encoded bytes, restores Python source in memory, and executes that source in the current interpreter."),
+    ("C", "Downloads encoded bytes, saves a recovered script, and starts a separate Python interpreter to run that file."),
+    ("D", "Loads a previously cached file without making a network request, then executes its restored Python source."),
+    ("E", "Downloads encoded bytes, interprets the decoded result as a data configuration, and never evaluates Python code."),
+    ("F", "Downloads encoded bytes, restores a Python module, and imports it by its module name using the import system."),
+)
+
+
+def is_correct(selection: str, recovered_answer: str) -> bool:
+    behavior = hashlib.sha256(selection.strip().upper().encode("utf-8")).hexdigest()
+    answer = hashlib.sha256(recovered_answer.strip().encode("utf-8")).hexdigest()
+    # Evaluate both parts before deciding. Never identify which part failed.
+    behavior_ok = hmac.compare_digest(behavior, BEHAVIOR_SHA256)
+    answer_ok = hmac.compare_digest(answer, ANSWER_SHA256)
+    return bool(behavior_ok & answer_ok)
+
+
+def main() -> None:
+    print("NYITSec - The Suspicious Script")
+    print("Part 1: Select the description that most accurately explains the script.")
+    for code, description in OPTIONS:
+        print(f"  {code}. {description}")
+    try:
+        selected = input("Your choice (A-F): ")
+        phrase = input("Part 2: Recovered answer string: ")
+    except EOFError:
+        print("One or more answers are incorrect. Review the evidence and try again.")
+        return
+
+    if is_correct(selected, phrase):
+        print("Correct! Here is your unique pwn.college flag:")
+        print(Path("/flag").read_text(encoding="utf-8").strip())
+    else:
+        print("One or more answers are incorrect. Review the evidence and try again.")
+
+
+if __name__ == "__main__":
+    main()
