@@ -5,3 +5,5 @@ challenges:
     name: DNS Treasure Hunt
   - id: suspicious-script
     name: The Suspicious Script
+  - id: broken-login
+    name: The Broken Login
