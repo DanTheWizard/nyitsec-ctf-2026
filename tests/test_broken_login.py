@@ -88,6 +88,21 @@ class ForumTests(unittest.TestCase):
         self.assertIsNotNone(match)
         return self.post("/admin/nuke", {"confirm": match.group(1)})
 
+    def test_http_default_port_and_clean_fictional_hostname(self):
+        # Production listens on port 80, while tests use random free ports
+        # so CI does not need root privileges or occupy the runner's port 80.
+        self.assertEqual(self.code["PORT"], 80)
+        self.assertEqual(self.code["DOMAIN"], "nyitsecwebsite.test")
+        page, status = self.get(
+            "/", host="nyitsecwebsite.test"
+        )
+        self.assertEqual(status, 200)
+        self.assertIn("SUPER SECURE", page)
+        startup = (LAB / ".forum-start.sh").read_text(encoding="utf-8")
+        self.assertIn('"http://127.0.0.1/"', startup)
+        self.assertIn('"Host": "nyitsecwebsite.test"', startup)
+        self.assertNotIn(":8890", startup)
+
     def test_initial_forum_looks_real_and_uses_only_fictional_data(self):
         page, status = self.get("/")
         self.assertEqual(status, 200)

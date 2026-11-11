@@ -4,7 +4,7 @@
 
 ## What students should experience
 
-A fictional NYITSec Underground forum is available at **http://nyitsecwebsite.test:8890/** through Firefox inside the challenge Desktop. The intentionally misleading badge says **SUPER SECURE™**. The forum includes 12 seeded discussions, five fake waiting-list emails, five test users, an ordinary login and a search screen.
+A fictional NYITSec Underground forum is available at **http://nyitsecwebsite.test/** through Firefox inside the challenge Desktop. The intentionally misleading badge says **SUPER SECURE™**. The forum includes 12 seeded discussions, five fake waiting-list emails, five test users, an ordinary login and a search screen.
 
 The mission is to recover the **Nuke authorization password**, then submit it with `nyitsec-answer`. This is an **authorized CTF demonstration**; the simulated nuke deletes only its own fictional posts in an isolated SQLite database. It never shuts down a server, kills processes, deletes external files, or accesses real NYIT systems.
 
@@ -12,7 +12,7 @@ The mission is to recover the **Nuke authorization password**, then submit it wi
 
 - The pwn.college `.init` includes the standard `/nyitsec-ctf` staging and an exact extra suffix invoking `/challenge/.forum-start.sh`.
 - The startup script appends `127.0.0.1 nyitsecwebsite.test` to the **container-local** `/etc/hosts` if absent, then starts `/challenge/.forum-app.py` and health-checks HTTP plus hostname resolution.
-- The server binds only to **127.0.0.1:8890**. It uses Python's standard-library `ThreadingHTTPServer` and an SQLite database under **`/run/nyitsec-forum/forum.sqlite3`**.
+- The server binds only to **127.0.0.1:80**. It uses Python's standard-library `ThreadingHTTPServer` and an SQLite database under **`/run/nyitsec-forum/forum.sqlite3`**.
 - Startup makes `.forum-app.py` root-only (`0600`), creates the runtime SQLite database, assigns the database and directory to the unprivileged **`nobody`** account (`0600`/ `0700`), and drops server privileges to that account.
 - `.ctfignore` excludes `.forum-app.py` and `.forum-start.sh` from the student workspace. **`/nyitsec-ctf` is empty** for this browser-based exercise. The protected `verify` and `bin/nyitsec-answer` follow the standard NYITSec scaffold.
 - Neither server nor students require any downloaded packages. Only localhost traffic is used; there are no network calls to outside systems, email sends, or request logs.
@@ -51,7 +51,7 @@ See [`docs/its-review/broken-login/README.md`](../../../docs/its-review/broken-l
 
 ## Live smoke-test checklist
 
-1. Open **Desktop → Firefox → http://nyitsecwebsite.test:8890/**. Verify the URL resolves locally, the styled forum loads and the SUPER SECURE badge appears.
+1. Open **Desktop → Firefox → http://nyitsecwebsite.test/**. Verify the URL resolves locally, the styled forum loads and the SUPER SECURE badge appears.
 2. Browse posts and search. Verify no outside URLs or real user information appear.
 3. Verify the Nuke URL is unavailable before admin login and ordinary wrong credentials do not authenticate.
 4. Submit a harmless normal signup, then the synthetic stacked-statement input to drop the queue. Confirm waitlist status becomes unavailable.

@@ -7,7 +7,7 @@ This is an **authorized, intentionally vulnerable training website running only 
 ### Open the forum
 
 1. Select **Workspace → Desktop** and open **Firefox**.
-2. Go to **http://nyitsecwebsite.test:8890/**.
+2. Go to **http://nyitsecwebsite.test/**.
 3. Explore the forum, its signup waiting list, and its member login.
 
 **Recon team hint:** Several input fields were not properly sanitized before being inserted into SQL queries. The signup queue and the administrator login might both be worth investigating. Think about what an unsafe query could let you do.

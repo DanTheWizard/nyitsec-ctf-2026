@@ -19,7 +19,7 @@ import secrets
 import sqlite3
 
 HOST = "127.0.0.1"
-PORT = 8890
+PORT = 80
 DOMAIN = "nyitsecwebsite.test"
 DB_PATH = Path("/run/nyitsec-forum/forum.sqlite3")
 NUKE_PASSWORD = "OrbitingToaster#73"

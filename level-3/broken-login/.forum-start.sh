@@ -31,8 +31,8 @@ if socket.gethostbyname("nyitsecwebsite.test") != "127.0.0.1":
 
 opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 request = urllib.request.Request(
-    "http://127.0.0.1:8890/",
-    headers={"Host": "nyitsecwebsite.test:8890"},
+    "http://127.0.0.1/",
+    headers={"Host": "nyitsecwebsite.test"},
 )
 for _ in range(30):
     try:

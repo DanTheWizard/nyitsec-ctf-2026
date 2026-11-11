@@ -19,7 +19,7 @@ The application **intentionally** uses these unsafe SQL operations. For actual p
 ## Runtime boundary and actual effects
 
 - Local test hostname: `nyitsecwebsite.test`, explicitly mapped to **127.0.0.1** in the **ephemeral container's** `/etc/hosts` file.
-- Local service: Python `ThreadingHTTPServer` bound to **127.0.0.1:8890**, with no network requests to external hosts and no email sending.
+- Local service: Python `ThreadingHTTPServer` bound to **127.0.0.1:80**, with no network requests to external hosts and no email sending.
 - Data: a newly seeded synthetic SQLite database at `/run/nyitsec-forum/forum.sqlite3`, created for the specific challenge container; five fake accounts, five fake waitlist emails, twelve fictional forum posts.
 - Process privilege: startup is performed by the challenge initializer; the HTTP server runs as **`nobody`** (not root) and the database files are owned by that unprivileged account. Students are the separate `hacker` user. The server source is protected with file mode `0600`, and the DB directory is `0700`.
 - The word **Nuke** is a fictional storyline: the button requires administrator authentication and a second confirmation. Only after the waiting-list table has been dropped does it execute `DELETE FROM posts` and update one status field in that local DB. It displays an invented password for the existing pwn.college answer checker.
