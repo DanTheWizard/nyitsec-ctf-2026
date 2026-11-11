@@ -18,10 +18,10 @@ The page may look ordinary, but webpages contain more than what appears on scree
 
 Once you find the review code, return to the terminal and run:
 
-\`\`\`bash
+```bash
 nyitsec-answer
-\`\`\`
+```
 
 Enter the code and submit the flag you receive.
 
-**Temporary workspace:** Scripts and files saved in \`/nyitsec-ctf\` disappear when the challenge restarts. Keep anything important in \`~/\`.
+**Temporary workspace:** Scripts and files saved in `/nyitsec-ctf` disappear when the challenge restarts. Keep anything important in `~/`.
