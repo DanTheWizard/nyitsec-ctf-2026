@@ -3,7 +3,8 @@
 // Writes an offline synthetic capture without opening network sockets.
 // All users, passwords, hosts, and addresses are fictional lab examples.
 import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
-import { dirname, fileURLToPath } from "node:url";
+import { fileURLToPath } from "node:url";
+import { dirname } from "node:path";
 
 function buildPcap() {
   const toBytes=s=>Array.from(s, c=>c.charCodeAt(0));
