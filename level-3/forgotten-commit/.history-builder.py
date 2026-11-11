@@ -163,16 +163,6 @@ Retrieve the recovery_phrase from the handoff section and report it.
 """)
     commit(repo, 10, "docs: record audit issue for missing handoff", 2)
 
-    for path in sorted(repo.rglob("*"), key=lambda item: len(item.parts), reverse=True):
-        if path.is_symlink():
-            raise ValueError("Symlinks are not allowed in the training project")
-        path.chmod(0o700 if path.is_dir() else 0o600)
-        if uid is not None and gid is not None:
-            os.chown(path, uid, gid)
-    repo.chmod(0o700)
-    if uid is not None and gid is not None:
-        os.chown(repo, uid, gid)
-
     if (repo / LEDGER).exists():
         raise AssertionError("The current checkout must not contain the ledger")
     if len(git(repo, "log", "--format=%s").splitlines()) != 10:
@@ -183,6 +173,19 @@ Retrieve the recovery_phrase from the handoff section and report it.
     recovered = git(repo, "show", f"{deleted}^:{LEDGER}")
     if f'recovery_phrase = "{RECOVERY_PHRASE}"' not in recovered:
         raise AssertionError("Git history does not contain the approved phrase")
+
+    # Check Git history before changing ownership; Git refuses repos owned by
+    # another account unless explicitly marked safe.
+    for path in sorted(repo.rglob("*"), key=lambda item: len(item.parts), reverse=True):
+        if path.is_symlink():
+            raise ValueError("Symlinks are not allowed in the training project")
+        path.chmod(0o700 if path.is_dir() else 0o600)
+        if uid is not None and gid is not None:
+            os.chown(path, uid, gid)
+    repo.chmod(0o700)
+    if uid is not None and gid is not None:
+        os.chown(repo, uid, gid)
+
     return repo
 
 
