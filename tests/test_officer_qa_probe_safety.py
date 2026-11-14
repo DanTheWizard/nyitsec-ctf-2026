@@ -18,7 +18,7 @@ class OfficerQAProbeSafetyTests(unittest.TestCase):
     def setUpClass(cls):
         guide = (ROOT / "docs/officer-solutions/fundamentals/base64-basics.md").read_text(encoding="utf-8")
         section = guide.split("### Noninteractive checker test over SSH", 1)[1]
-        match = re.search(r"```python\n([\s\\S]*?)\n```", section)
+        match = re.search(r"```python\n(.*?)\n```", section, flags=re.DOTALL)
         if match is None:
             raise AssertionError("Missing Python QA probe in officer guide")
         cls.probe = match.group(1)
