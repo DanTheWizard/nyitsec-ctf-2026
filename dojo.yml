@@ -6,6 +6,8 @@ description: |
   Our custom event leaderboard will show points and completed challenges, with an overall ranking and separate rankings for each difficulty section.
 
   AI tools are allowed and encouraged! Use them to ask questions, learn unfamiliar commands, troubleshoot, and explore solutions. Focus on understanding what you do. You are not expected to finish every challenge during the event. This is an introduction to cybersecurity topics that NYITSec plans to explore further in future events.
+
+  Need a hand? pwn.college provides [SENSAI](https://pwn.college/sensai), an optional AI assistant that can use context from your active challenge and workspace. Start a challenge, click **Help** in the pwn.college navigation bar, and ask SENSAI for an explanation, a hint, or help understanding a command or error. You may also use ChatGPT or other AI tools. Always verify suggestions and try to understand each step rather than simply obtaining the flag.
 type: hidden
 award:
   emoji: 🛡️

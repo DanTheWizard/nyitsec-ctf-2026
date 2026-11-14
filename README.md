@@ -9,7 +9,7 @@ Source code for the private [NYITSec pwn.college dojo](https://pwn.college/examp
 - **Easy:** File-format investigation, concealed evidence, image steganography, a fictional localhost website, and a randomized archive-search challenge.
 - **Intermediate:** The Forgotten Commit (Git history recovery), Packet Detective (HTTP capture analysis), DNS Treasure Hunt, The Suspicious Script, and The Broken Login, progressing from local repository investigation to networking, Python analysis, and a fictional SQL injection forum.
 
-The event's custom leaderboard is planned to report overall points and completed challenges alongside separate Beginner, Easy, and Intermediate rankings. AI tools are permitted and encouraged for learning and problem-solving; students are not expected to finish every challenge during the session. These exercises introduce topics for future NYITSec events.
+The event's custom leaderboard is planned to report overall points and completed challenges alongside separate Beginner, Easy, and Intermediate rankings. AI tools are permitted and encouraged for learning and problem-solving; students are not expected to finish every challenge during the session. The dojo also introduces [SENSAI](https://pwn.college/sensai), pwn.college's optional, challenge-aware AI assistant, accessed through the top **Help** navigation while a challenge is running. These exercises introduce topics for future NYITSec events.
 
 Students work in a writable, temporary `/nyitsec-ctf` directory. Each challenge provides a `nyitsec-answer` command to check their answer and reveal their own pwn.college flag. The protected verifier stays under `/challenge`.
 
