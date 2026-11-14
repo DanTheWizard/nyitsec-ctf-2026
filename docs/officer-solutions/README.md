@@ -7,7 +7,7 @@
 1. In the authenticated ChatGPT browser, start the desired pwn.college challenge in normal mode.
 2. From **local** Codex/PowerShell, connect using the configured personal SSH key (do not share or upload that key).
 3. Read the matching private officer guide. Its section **Officer QA: verified answer and repeatable solution** provides the known correct input, a wrong input, and a reproducible student solution path. Do **not** derive answers by solving when running answer-checker-only QA.
-4. Run the provided noninteractive `nyitsec-answer` probe via SSH, in the active instance. It checks the fixed `Correct!` success marker and does not echo or save the platform flag.
+4. Run the guide's Python snippet via `python3` in the active SSH-connected instance (for example, paste it into `python3 -` and end input with Ctrl+D, or use an SSH heredoc). It checks verifier exit status, the exact error/success response, and the presence of a correctly shaped platform flag without printing or saving the flag. A crash, timeout, SSH transport failure, or incomplete flag retrieval is **BLOCKED**, never PASS.
 5. Check workspace/file isolation and restart behavior separately using [the pwn.college checklist](PWNCOLLEGE-REVIEW-CHECKLIST.md). Restart the challenge when moving between tests that alter synthetic app state.
 6. For multi-input challenges, provide every line in the specified prompt order. Distinguish a real PASS from a transport error; an SSH or command failure is **BLOCKED**, not PASS.
 7. Record only `PASS`, `FAIL`, or `BLOCKED` and relevant non-secret evidence. Do not copy the pwn.college flag into a report.
