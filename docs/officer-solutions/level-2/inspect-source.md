@@ -28,3 +28,40 @@ The browser-visible site is a polished fictional Harborview Learning Center land
 6. Verify old Fundamentals and Level 2 exercises remain unchanged.
 
 The root-owned initialization script's web-service suffix is checked by the repository validator, and the Python unit tests exercise HTTP serving, HTML source, permissions conventions, workspace copy exclusions, and answer validation.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct answer:** `NYITSEC-SOURCE-26`  
+**Deliberately incorrect input:** `NYITSEC-SOURCE-27`  
+**Input policy:** Case-sensitive; leading/trailing whitespace is stripped.
+
+### Reproduce the intended solution
+
+With the challenge's localhost service running, use Desktop → Firefox → `http://127.0.0.1:8765/` and View Page Source / Ctrl+U. The HTML comment contains `Training review code: NYITSEC-SOURCE-26`.
+
+For headless officer QA via SSH, the equivalent safe local request is:
+
+```bash
+curl --fail --silent http://127.0.0.1:8765/ | grep 'Training review code'
+```
+
+Only localhost is contacted. No external website is involved.
+
+### Noninteractive checker test over SSH
+
+The following commands inspect only whether the checker prints its success marker. They do **not** print or store the student's unique pwn.college flag.
+
+```bash
+if printf '%s\n' 'NYITSEC-SOURCE-27' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: incorrect input accepted'
+else
+  echo 'PASS: incorrect input rejected'
+fi
+if printf '%s\n' 'NYITSEC-SOURCE-26' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+These are officer-only synthetic answers, not pwn.college flags. Do not add them to student-facing descriptions or record actual flag values in QA reports.

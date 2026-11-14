@@ -30,3 +30,40 @@ The answer phrase is purposefully present in the root-owned generation code and 
 6. Confirm `cat /challenge/.scatter.py` is permission denied for `hacker`, while documents under `/nyitsec-ctf` are readable and writable.
 
 Unit tests cover many seeded random layouts, exactly one clue, permission behavior, and the rejected-overwrite guard.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct answer:** `NYITSEC-LOST-26`  
+**Deliberately incorrect input:** `NYITSEC-LOST-25`  
+**Input policy:** Case-sensitive; leading/trailing whitespace is stripped. The answer code remains fixed, but the clue's document location is randomized on each launch.
+
+### Reproduce the intended solution
+
+Run a recursive content search over the generated 108-document archive:
+
+```bash
+cd /nyitsec-ctf
+find . -type f | wc -l
+grep -Rni 'Recovered code:' .
+```
+
+Exactly one document includes `Recovered code: NYITSEC-LOST-26`; its path may change after restarting the challenge. The generator's `CODE` constant is stable, not a new per-instance secret.
+
+### Noninteractive checker test over SSH
+
+The following commands inspect only whether the checker prints its success marker. They do **not** print or store the student's unique pwn.college flag.
+
+```bash
+if printf '%s\n' 'NYITSEC-LOST-25' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: incorrect input accepted'
+else
+  echo 'PASS: incorrect input rejected'
+fi
+if printf '%s\n' 'NYITSEC-LOST-26' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+These are officer-only synthetic answers, not pwn.college flags. Do not add them to student-facing descriptions or record actual flag values in QA reports.

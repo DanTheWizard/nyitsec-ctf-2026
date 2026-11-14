@@ -20,3 +20,40 @@ The `verify` program compares a SHA-256 digest and reveals the student's own pwn
 2. `cat document.txt` displays only the recipe in the standard pwn.college terminal.
 3. `strings document.txt` reveals the case metadata and recovery code.
 4. A wrong `nyitsec-answer` is rejected, and the correct code returns the unique student flag.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct answer:** `COOKIE-TRACE-26`  
+**Deliberately incorrect input:** `COOKIE-TRACE-27`  
+**Input policy:** Case-sensitive; leading/trailing whitespace is stripped.
+
+### Reproduce the intended solution
+
+Read the recipe normally, then inspect printable file contents to expose the ANSI-concealed trailer:
+
+```bash
+cd /nyitsec-ctf
+cat document.txt
+strings document.txt | grep 'RECOVERY-CODE'
+```
+
+The metadata-like trailer contains `RECOVERY-CODE=COOKIE-TRACE-26`. This is text concealed using an ANSI escape sequence, not a filesystem extended attribute.
+
+### Noninteractive checker test over SSH
+
+The following commands inspect only whether the checker prints its success marker. They do **not** print or store the student's unique pwn.college flag.
+
+```bash
+if printf '%s\n' 'COOKIE-TRACE-27' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: incorrect input accepted'
+else
+  echo 'PASS: incorrect input rejected'
+fi
+if printf '%s\n' 'COOKIE-TRACE-26' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+These are officer-only synthetic answers, not pwn.college flags. Do not add them to student-facing descriptions or record actual flag values in QA reports.

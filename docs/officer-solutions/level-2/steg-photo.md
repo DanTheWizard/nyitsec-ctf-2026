@@ -25,3 +25,42 @@ The default pwn.college workspace package list does not explicitly include stegh
 6. Confirm original Fundamentals challenges remain unchanged.
 
 **Note:** The real steghide extraction is verified in CI against the committed JPEG using the bundled tool before deployment. Also perform this live smoke test after merge.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct answer:** `PHOTO-CRUMB-26`  
+**Deliberately incorrect input:** `PHOTO-CRUMB-25`  
+**Input policy:** Case-sensitive; leading/trailing whitespace is stripped.
+
+### Reproduce the intended solution
+
+Read the fictional evidence note for the passphrase, then use the supplied offline steghide wrapper:
+
+```bash
+cd /nyitsec-ctf
+cat case-note.txt
+steghide --version
+steghide extract -sf evidence.jpg -p cookie-jar -xf hidden-note.txt -f
+cat hidden-note.txt
+```
+
+The embedded synthetic document says `Response code: PHOTO-CRUMB-26`. A fresh challenge instance is recommended to avoid an existing extracted output file.
+
+### Noninteractive checker test over SSH
+
+The following commands inspect only whether the checker prints its success marker. They do **not** print or store the student's unique pwn.college flag.
+
+```bash
+if printf '%s\n' 'PHOTO-CRUMB-25' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: incorrect input accepted'
+else
+  echo 'PASS: incorrect input rejected'
+fi
+if printf '%s\n' 'PHOTO-CRUMB-26' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+These are officer-only synthetic answers, not pwn.college flags. Do not add them to student-facing descriptions or record actual flag values in QA reports.

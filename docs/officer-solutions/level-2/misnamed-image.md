@@ -31,3 +31,40 @@ pwn.college runs an XFCE desktop with its own background image (configured globa
 ## Flag handling
 
 The image phrase is a *synthetic challenge answer*, not a real secret or pwn.college flag. The checker stores a SHA-256 digest rather than readable answer text and requires the full case-sensitive phrase with its symbol. Never hardcode real or reusable platform flags.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct answer:** `ThePassword#LOL`  
+**Deliberately incorrect input:** `ThePassword#LOLx`  
+**Input policy:** Case-sensitive, including `#`; leading/trailing whitespace is stripped.
+
+### Reproduce the intended solution
+
+Check the misleading extension and open the PNG under its correct name:
+
+```bash
+cd /nyitsec-ctf
+file notice.txt
+cp notice.txt notice.png
+```
+
+Open `notice.png` with the pwn.college Desktop image viewer or VS Code. The image pixels display `ThePassword#LOL`. This should remain a *visual* solution, not plaintext embedded into student descriptions.
+
+### Noninteractive checker test over SSH
+
+The following commands inspect only whether the checker prints its success marker. They do **not** print or store the student's unique pwn.college flag.
+
+```bash
+if printf '%s\n' 'ThePassword#LOLx' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: incorrect input accepted'
+else
+  echo 'PASS: incorrect input rejected'
+fi
+if printf '%s\n' 'ThePassword#LOL' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+These are officer-only synthetic answers, not pwn.college flags. Do not add them to student-facing descriptions or record actual flag values in QA reports.
