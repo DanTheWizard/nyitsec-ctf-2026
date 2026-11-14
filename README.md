@@ -13,7 +13,7 @@ The event's custom leaderboard is planned to report overall points and completed
 
 Students work in a writable, temporary `/nyitsec-ctf` directory. Each challenge provides a `nyitsec-answer` command to check their answer and reveal their own pwn.college flag. The protected verifier stays under `/challenge`.
 
-Student-facing instructions are in each challenge's `DESCRIPTION.md`; officer notes are in `README.md` in the challenge folder.
+Student-facing instructions are in each challenge's `DESCRIPTION.md`; officer-only solutions and smoke tests are kept outside deployed challenge directories under `docs/officer-solutions/<module>/<challenge>.md`. Technical ITS reviews stay in `docs/its-review/`.
 
 ## Create another NYITSec challenge
 

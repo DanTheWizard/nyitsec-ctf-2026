@@ -28,7 +28,7 @@ The generator automatically creates:
 - `/challenge/.ctfignore` provides extra exclusions. Mandatory exclusions protect `.init`, `.workspace.py`, `.ctfignore`, `verify`, `bin/`, and internal README/DESCRIPTION files.
 - Executable `/challenge/bin/nyitsec-answer` delegates to `/challenge/verify` without copying the protected verifier.
 - Executable `/challenge/verify` is a **fail-closed** Python verifier; replace `is_correct()` before publication.
-- Student `DESCRIPTION.md` and officer `README.md`.
+- Student `DESCRIPTION.md` in challenge folders and officer notes at `docs/officer-solutions/<module>/<challenge>.md` (never deployed).
 
 **Do not alter students' persistent `~/.bashrc`.** The challenge's temporary container-local startup hook uses `/etc/bashrc`. Only interactive shells starting from the default home directory should auto-cd.
 
@@ -49,6 +49,6 @@ python3 scripts/validate_dojo.py
 python3 -m unittest discover -s tests -v
 ~~~
 
-Check that `dojo.yml` and every relevant `module.yml` parse, `.init`, `verify`, and the command wrapper are executable (`100755`), `.workspace.py` and `.ctfignore` exist, standard startup/copy files match the shared template, no scaffold TODOs remain, and documentation says `nyitsec-answer` and `/nyitsec-ctf`. Preserve the working verifiers and their student-specific `/flag` behavior.
+Check that `dojo.yml` and every relevant `module.yml` parse, `.init`, `verify`, and the command wrapper are executable (`100755`), `.workspace.py` and `.ctfignore` exist, standard startup/copy files match the shared template, no scaffold TODOs remain, officer notes exist outside challenge folders, no challenge-local `README.md` exists, and documentation says `nyitsec-answer` and `/nyitsec-ctf`. Preserve the working verifiers and their student-specific `/flag` behavior.
 
 Changes go to a feature branch and pull request, not directly to `main`. After merge, GitHub Actions validates sources before triggering the dojo updater. Test student experience in the live workspace after deployment.

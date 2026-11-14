@@ -30,13 +30,13 @@ That also registers `web-basics` in `dojo.yml`.
 
 - `DESCRIPTION.md`: objective and instructions for students, including `nyitsec-answer`. Student files are staged in writable `/nyitsec-ctf`. Teach `nano audit.sh` (Ctrl+O, Enter, Ctrl+X) followed by `bash audit.sh`. Warn that this is a temporary, nonpersistent directory; students may copy finished work to `~/` for safekeeping.
 - `verify`: implement `is_correct(answer)`. The generated stub **always returns False** until you implement your solution check. Read `/flag` only after validation succeeds.
-- Add fictional challenge files (logs, data, code, etc.), and document any dependencies in the author `README.md`.
+- Add fictional challenge files (logs, data, code, etc.), and document any dependencies in `docs/officer-solutions/<module>/<challenge>.md`. Never put officer notes in a deployed challenge directory.
 
 Avoid plaintext secrets, real-world target data, and hardcoded reusable flags. Never commit the dojo updater URL or its update code. pwn.college generates the real per-student `/flag`.
 
 ## What is already handled for you
 
-New challenges open interactive terminals in writable `/nyitsec-ctf`, populated with ordinary student-facing files copied from `/challenge`. The startup script excludes protected implementation files and honors optional `.ctfignore` patterns. `nyitsec-answer` stays on the terminal command search path and the original verifier remains callable as `/challenge/verify`.
+New challenges open interactive terminals in writable `/nyitsec-ctf`, populated with ordinary student-facing files copied from `/challenge`. The startup script excludes protected implementation files and honors optional `.ctfignore` patterns. Officer solutions are authored outside challenge directories under `docs/officer-solutions/`, not merely ignored during copying. `nyitsec-answer` stays on the terminal command search path and the original verifier remains callable as `/challenge/verify`.
 
 The startup hook is **challenge-container local**, not a change to student persistent shell settings. The workspace is reset when its challenge container is replaced; student work there is **not persistent**. Do not put real secrets or privileged programs into copied assets.
 
