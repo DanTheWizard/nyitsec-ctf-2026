@@ -25,7 +25,7 @@ If desired, students may use `git restore --source=<approved-commit> -- config/r
 
 ## Startup and isolation
 
-- Canonical `.workspace.py` first creates the writable `/nyitsec-ctf` directory. The precise approved `HISTORY_INIT_SUFFIX` then locks `.history-builder.py` and these officer notes to `0600`, and invokes the generator as root.
+- Canonical `.workspace.py` first creates the writable `/nyitsec-ctf` directory. The precise approved `HISTORY_INIT_SUFFIX` then locks `.history-builder.py` and the remaining runtime resources to `0600`, and invokes the generator as root. The officer notes are not present inside `/challenge`.
 - The generator refuses to overwrite an existing `night-relay` directory. It uses the **genuine offline Git executable** installed at startup from the bundled Ubuntu 24.04 runtime, scripted fixed commits, and fake authors; all operations are restricted to the newly created repository. Generated files **including the full `.git` directory** are assigned to `hacker` with mode `0600` for files and `0700` for directories.
 - The builder, bundled Git archive, provenance manifest, and preparatory script are excluded via `.ctfignore`, so its source (and plaintext expected phrase) is not copied to the student workspace. The source is nevertheless fully reviewable in the connected GitHub repository.
 - No local server, privileged runtime network service, external clone, SSH, or real organizational data is involved.
