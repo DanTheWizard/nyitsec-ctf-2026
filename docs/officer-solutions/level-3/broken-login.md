@@ -47,7 +47,7 @@ The order of dropping the queue and admin authentication is not enforced. If the
 
 ## Security scope and ITS review
 
-See [`docs/its-review/broken-login/README.md`](../../../docs/its-review/broken-login/README.md) for the deliberately insecure SQL queries, service isolation, reset boundaries, and data inventory. Source code is committed to GitHub for officer/ITS inspection. This documentation **does not constitute ITS authorization** and must not be deployed beyond the isolated training VM.
+See [`docs/its-review/broken-login/README.md`](../../its-review/broken-login/README.md) for the deliberately insecure SQL queries, service isolation, reset boundaries, and data inventory. Source code is committed to GitHub for officer/ITS inspection. This documentation **does not constitute ITS authorization** and must not be deployed beyond the isolated training VM.
 
 ## Live smoke-test checklist
 
