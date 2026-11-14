@@ -111,7 +111,7 @@ for label, answers, should_accept in cases:
         continue
 
     lines = result.stdout.splitlines()
-    success_lines = [i for i, line in enumerate(lines) if line.startswith("Correct!")]
+    success_lines = [i for i, line in enumerate(lines) if "Correct!" in line]
 
     if should_accept:
         if not success_lines:

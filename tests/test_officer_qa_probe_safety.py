@@ -45,6 +45,16 @@ class OfficerQAProbeSafetyTests(unittest.TestCase):
         self.assertIn("PASS: correct answer accepted", output)
         self.assertNotIn("test-example-only", output)
 
+    def test_success_after_input_prompt_on_same_line(self):
+        code, output = self.run_probe([
+            self.response("Enter the decoded answer code: Not quite. Decode the provided file and try again.\n"),
+            self.response("Enter the decoded answer code: Correct! Here is your unique pwn.college flag:\npwn.college{test-example-only}\n"),
+        ])
+        self.assertEqual(code, 0)
+        self.assertIn("PASS: deliberately incorrect answer rejected", output)
+        self.assertIn("PASS: correct answer accepted", output)
+        self.assertNotIn("test-example-only", output)
+
     def test_verifier_crash_does_not_count_as_rejection(self):
         code, output = self.run_probe([
             self.response("", code=127),
