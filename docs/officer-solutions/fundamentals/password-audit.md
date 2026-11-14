@@ -61,3 +61,45 @@ The offline test suite checks the local wordlist, SHA-256 data integrity, Bash d
 ## Writable workspace standard
 
 The `.init` startup script prepares `/nyitsec-ctf` by running `.workspace.py` and opens interactive terminals there. Challenge input copies are writable by `hacker`; protected files remain in `/challenge`. The blacklist in `.ctfignore` may add exclusions, but protected core names cannot be copied. The workspace is disposable across challenge restarts. Check `pwd`, `ls -la`, `touch scratch.txt`, `nyitsec-answer`, and correct/wrong solution submissions after deployment.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct answer (in prompt order):** `Welcome2026!`  
+**Deliberately incorrect test input:** `Welcome2026`  
+**Input policy:** Password matching is **case-sensitive** and whitespace-sensitive. Do not trim or casefold the candidate.
+
+### Reproduce the intended solution
+
+Read the synthetic hash and calculate SHA-256 for each local wordlist entry without a trailing newline:
+
+```bash
+cd /nyitsec-ctf
+target=$(sed -n 's/^sha256=//p' audit_record.txt)
+while IFS= read -r candidate; do
+  actual=$(printf '%s' "$candidate" | sha256sum)
+  if [ "${actual%% *}" = "$target" ]; then
+    printf 'Matching synthetic password: %s\n' "$candidate"
+  fi
+done < common_passwords.txt
+```
+
+Exactly one candidate matches: `Welcome2026!`. No real account is accessed.
+
+### Noninteractive checker test over SSH
+
+Run these commands **inside the active challenge container** (the local Codex/SSH session can invoke them remotely). They check for the fixed `Correct!` success marker without printing or recording the student-specific pwn.college flag.
+
+```bash
+if printf '%s\n' 'Welcome2026' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: wrong input was accepted'
+else
+  echo 'PASS: wrong input rejected'
+fi
+if printf '%s\n' 'Welcome2026!' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+The literal answer above is synthetic challenge data stored **only in private officer documentation**, never in student-facing `DESCRIPTION.md`, `/challenge/README.md`, or the writable workspace. Do not save actual platform flags in QA reports.
