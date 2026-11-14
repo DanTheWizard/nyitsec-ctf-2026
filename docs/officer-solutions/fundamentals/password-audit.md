@@ -61,3 +61,96 @@ The offline test suite checks the local wordlist, SHA-256 data integrity, Bash d
 ## Writable workspace standard
 
 The `.init` startup script prepares `/nyitsec-ctf` by running `.workspace.py` and opens interactive terminals there. Challenge input copies are writable by `hacker`; protected files remain in `/challenge`. The blacklist in `.ctfignore` may add exclusions, but protected core names cannot be copied. The workspace is disposable across challenge restarts. Check `pwd`, `ls -la`, `touch scratch.txt`, `nyitsec-answer`, and correct/wrong solution submissions after deployment.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct answer (in prompt order):** `Welcome2026!`  
+**Deliberately incorrect test input:** `Welcome2026`  
+**Input policy:** Password matching is **case-sensitive** and whitespace-sensitive. Do not trim or casefold the candidate.
+
+### Reproduce the intended solution
+
+Read the synthetic hash and calculate SHA-256 for each local wordlist entry without a trailing newline:
+
+```bash
+cd /nyitsec-ctf
+target=$(sed -n 's/^sha256=//p' audit_record.txt)
+while IFS= read -r candidate; do
+  actual=$(printf '%s' "$candidate" | sha256sum)
+  if [ "${actual%% *}" = "$target" ]; then
+    printf 'Matching synthetic password: %s\n' "$candidate"
+  fi
+done < common_passwords.txt
+```
+
+Exactly one candidate matches: `Welcome2026!`. No real account is accessed.
+
+### Noninteractive checker test over SSH
+
+Run this self-contained Python probe **inside a fresh SSH-connected challenge instance**. It executes the existing `nyitsec-answer` command twice, one known-wrong and one known-correct submission. It checks exit status, the exact rejection message, and the presence of a correctly shaped platform flag, but **never prints or saves the flag**. `BLOCKED` means the verifier or environment could not be validated, not that the challenge was solved.
+
+```python
+import re
+import subprocess
+import sys
+
+# Inputs are fictional training data from this private officer guide.
+cases = [
+    ("incorrect", ["Welcome2026"], False),
+    ("correct", ["Welcome2026!"], True),
+]
+rejection_text = "Not a match. Review the candidate hashes and try again."
+status = 0
+
+for label, answers, should_accept in cases:
+    try:
+        result = subprocess.run(
+            ["nyitsec-answer"],
+            input="\n".join(answers) + "\n",
+            text=True,
+            capture_output=True,
+            timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        print(f"BLOCKED: {label} probe could not execute or timed out")
+        status = max(status, 2)
+        continue
+
+    if result.returncode != 0:
+        print(f"BLOCKED: {label} verifier exited with status {result.returncode}")
+        status = max(status, 2)
+        continue
+
+    lines = result.stdout.splitlines()
+    success_lines = [i for i, line in enumerate(lines) if line.startswith("Correct!")]
+
+    if should_accept:
+        if not success_lines:
+            if rejection_text in result.stdout:
+                print("FAIL: documented correct answer was rejected")
+                status = max(status, 1)
+            else:
+                print("BLOCKED: correct probe had no recognized verifier response")
+                status = max(status, 2)
+        else:
+            position = success_lines[-1] + 1
+            flag = lines[position].strip() if position < len(lines) else ""
+            if re.fullmatch(r"pwn\.college\{[^{}\s]+\}", flag):
+                print("PASS: correct answer accepted and platform flag produced (redacted)")
+            else:
+                print("BLOCKED: success marker present but expected flag missing or malformed")
+                status = max(status, 2)
+    elif success_lines:
+        print("FAIL: deliberately incorrect answer was accepted")
+        status = max(status, 1)
+    elif rejection_text in result.stdout:
+        print("PASS: deliberately incorrect answer rejected")
+    else:
+        print("BLOCKED: incorrect probe had no recognized rejection response")
+        status = max(status, 2)
+
+# 0: all checks passed; 1: verification failed; 2: environment/transport blocked.
+sys.exit(status)
+```
+
+The literal answer above is synthetic challenge data stored **only in private officer documentation**, never in student-facing `DESCRIPTION.md`, `/challenge/README.md`, or the writable workspace. Do not save actual platform flags in QA reports.

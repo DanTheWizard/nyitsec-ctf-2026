@@ -30,3 +30,91 @@ The answer phrase is purposefully present in the root-owned generation code and 
 6. Confirm `cat /challenge/.scatter.py` is permission denied for `hacker`, while documents under `/nyitsec-ctf` are readable and writable.
 
 Unit tests cover many seeded random layouts, exactly one clue, permission behavior, and the rejected-overwrite guard.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct answer:** `NYITSEC-LOST-26`  
+**Deliberately incorrect input:** `NYITSEC-LOST-25`  
+**Input policy:** Case-sensitive; leading/trailing whitespace is stripped. The answer code remains fixed, but the clue's document location is randomized on each launch.
+
+### Reproduce the intended solution
+
+Run a recursive content search over the generated 108-document archive:
+
+```bash
+cd /nyitsec-ctf
+find . -type f | wc -l
+grep -Rni 'Recovered code:' .
+```
+
+Exactly one document includes `Recovered code: NYITSEC-LOST-26`; its path may change after restarting the challenge. The generator's `CODE` constant is stable, not a new per-instance secret.
+
+### Noninteractive checker test over SSH
+
+Run this self-contained Python probe **inside a fresh SSH-connected challenge instance**. It executes the existing `nyitsec-answer` command twice, one known-wrong and one known-correct submission. It checks exit status, the exact rejection message, and the presence of a correctly shaped platform flag, but **never prints or saves the flag**. `BLOCKED` means the verifier or environment could not be validated, not that the challenge was solved.
+
+```python
+import re
+import subprocess
+import sys
+
+# Inputs are fictional training data from this private officer guide.
+cases = [
+    ("incorrect", ["NYITSEC-LOST-25"], False),
+    ("correct", ["NYITSEC-LOST-26"], True),
+]
+rejection_text = "That code is not correct. Search the archived documents and try again."
+status = 0
+
+for label, answers, should_accept in cases:
+    try:
+        result = subprocess.run(
+            ["nyitsec-answer"],
+            input="\n".join(answers) + "\n",
+            text=True,
+            capture_output=True,
+            timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        print(f"BLOCKED: {label} probe could not execute or timed out")
+        status = max(status, 2)
+        continue
+
+    if result.returncode != 0:
+        print(f"BLOCKED: {label} verifier exited with status {result.returncode}")
+        status = max(status, 2)
+        continue
+
+    lines = result.stdout.splitlines()
+    success_lines = [i for i, line in enumerate(lines) if line.startswith("Correct!")]
+
+    if should_accept:
+        if not success_lines:
+            if rejection_text in result.stdout:
+                print("FAIL: documented correct answer was rejected")
+                status = max(status, 1)
+            else:
+                print("BLOCKED: correct probe had no recognized verifier response")
+                status = max(status, 2)
+        else:
+            position = success_lines[-1] + 1
+            flag = lines[position].strip() if position < len(lines) else ""
+            if re.fullmatch(r"pwn\.college\{[^{}\s]+\}", flag):
+                print("PASS: correct answer accepted and platform flag produced (redacted)")
+            else:
+                print("BLOCKED: success marker present but expected flag missing or malformed")
+                status = max(status, 2)
+    elif success_lines:
+        print("FAIL: deliberately incorrect answer was accepted")
+        status = max(status, 1)
+    elif rejection_text in result.stdout:
+        print("PASS: deliberately incorrect answer rejected")
+    else:
+        print("BLOCKED: incorrect probe had no recognized rejection response")
+        status = max(status, 2)
+
+# 0: all checks passed; 1: verification failed; 2: environment/transport blocked.
+sys.exit(status)
+```
+
+These are officer-only synthetic answers, not pwn.college flags. Do not add them to student-facing descriptions or record actual flag values in QA reports.

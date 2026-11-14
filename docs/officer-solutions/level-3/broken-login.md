@@ -60,3 +60,85 @@ See [`docs/its-review/broken-login/README.md`](../../its-review/broken-login/REA
 7. Reset Challenge. Verify the fictional accounts, queue and posts are restored.
 8. Test alternate UNION-based credential discovery and genuine admin login.
 9. Verify `cat /challenge/.forum-app.py` fails for the normal `hacker` user, and `/run/nyitsec-forum/` is not readable by `hacker`.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct inputs (prompt order):** `OrbitingToaster#73`  
+**Deliberately incorrect test inputs:** `OrbitingToaster#74`  
+**Input policy:** Case-sensitive; leading/trailing whitespace is stripped.
+
+### Reproduce the intended solution
+
+The intended *student* route uses the fictional isolated forum at `http://nyitsecwebsite.test/` to drop the synthetic signup queue, authenticate as its fake admin, confirm the fictional Nuke action, and read `OrbitingToaster#73` from the success screen. The existing `Intended SQL injection solution` above documents the precise training-only workflow.
+
+For **checker QA**, do not execute that flow or modify the test forum: use the documented fixed answer directly with `nyitsec-answer`. Run the separate forum behavior and reset smoke tests if required.
+
+### Noninteractive checker test over SSH
+
+Run this self-contained Python probe **inside a fresh SSH-connected challenge instance**. It executes the existing `nyitsec-answer` command twice, one known-wrong and one known-correct submission. It checks exit status, the exact rejection message, and the presence of a correctly shaped platform flag, but **never prints or saves the flag**. `BLOCKED` means the verifier or environment could not be validated, not that the challenge was solved.
+
+```python
+import re
+import subprocess
+import sys
+
+# Inputs are fictional training data from this private officer guide.
+cases = [
+    ("incorrect", ["OrbitingToaster#74"], False),
+    ("correct", ["OrbitingToaster#73"], True),
+]
+rejection_text = "Incorrect authorization password. Review the forum and try again."
+status = 0
+
+for label, answers, should_accept in cases:
+    try:
+        result = subprocess.run(
+            ["nyitsec-answer"],
+            input="\n".join(answers) + "\n",
+            text=True,
+            capture_output=True,
+            timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        print(f"BLOCKED: {label} probe could not execute or timed out")
+        status = max(status, 2)
+        continue
+
+    if result.returncode != 0:
+        print(f"BLOCKED: {label} verifier exited with status {result.returncode}")
+        status = max(status, 2)
+        continue
+
+    lines = result.stdout.splitlines()
+    success_lines = [i for i, line in enumerate(lines) if line.startswith("Correct!")]
+
+    if should_accept:
+        if not success_lines:
+            if rejection_text in result.stdout:
+                print("FAIL: documented correct answer was rejected")
+                status = max(status, 1)
+            else:
+                print("BLOCKED: correct probe had no recognized verifier response")
+                status = max(status, 2)
+        else:
+            position = success_lines[-1] + 1
+            flag = lines[position].strip() if position < len(lines) else ""
+            if re.fullmatch(r"pwn\.college\{[^{}\s]+\}", flag):
+                print("PASS: correct answer accepted and platform flag produced (redacted)")
+            else:
+                print("BLOCKED: success marker present but expected flag missing or malformed")
+                status = max(status, 2)
+    elif success_lines:
+        print("FAIL: deliberately incorrect answer was accepted")
+        status = max(status, 1)
+    elif rejection_text in result.stdout:
+        print("PASS: deliberately incorrect answer rejected")
+    else:
+        print("BLOCKED: incorrect probe had no recognized rejection response")
+        status = max(status, 2)
+
+# 0: all checks passed; 1: verification failed; 2: environment/transport blocked.
+sys.exit(status)
+```
+
+Keep this literal solution in the **private officer guide only**, never in the student-facing challenge directory or logs. Do not record platform flag values.

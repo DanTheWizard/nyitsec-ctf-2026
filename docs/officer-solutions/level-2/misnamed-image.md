@@ -31,3 +31,91 @@ pwn.college runs an XFCE desktop with its own background image (configured globa
 ## Flag handling
 
 The image phrase is a *synthetic challenge answer*, not a real secret or pwn.college flag. The checker stores a SHA-256 digest rather than readable answer text and requires the full case-sensitive phrase with its symbol. Never hardcode real or reusable platform flags.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct answer:** `ThePassword#LOL`  
+**Deliberately incorrect input:** `ThePassword#LOLx`  
+**Input policy:** Case-sensitive, including `#`; leading/trailing whitespace is stripped.
+
+### Reproduce the intended solution
+
+Check the misleading extension and open the PNG under its correct name:
+
+```bash
+cd /nyitsec-ctf
+file notice.txt
+cp notice.txt notice.png
+```
+
+Open `notice.png` with the pwn.college Desktop image viewer or VS Code. The image pixels display `ThePassword#LOL`. This should remain a *visual* solution, not plaintext embedded into student descriptions.
+
+### Noninteractive checker test over SSH
+
+Run this self-contained Python probe **inside a fresh SSH-connected challenge instance**. It executes the existing `nyitsec-answer` command twice, one known-wrong and one known-correct submission. It checks exit status, the exact rejection message, and the presence of a correctly shaped platform flag, but **never prints or saves the flag**. `BLOCKED` means the verifier or environment could not be validated, not that the challenge was solved.
+
+```python
+import re
+import subprocess
+import sys
+
+# Inputs are fictional training data from this private officer guide.
+cases = [
+    ("incorrect", ["ThePassword#LOLx"], False),
+    ("correct", ["ThePassword#LOL"], True),
+]
+rejection_text = "Not quite. Examine the file's real format and try again."
+status = 0
+
+for label, answers, should_accept in cases:
+    try:
+        result = subprocess.run(
+            ["nyitsec-answer"],
+            input="\n".join(answers) + "\n",
+            text=True,
+            capture_output=True,
+            timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        print(f"BLOCKED: {label} probe could not execute or timed out")
+        status = max(status, 2)
+        continue
+
+    if result.returncode != 0:
+        print(f"BLOCKED: {label} verifier exited with status {result.returncode}")
+        status = max(status, 2)
+        continue
+
+    lines = result.stdout.splitlines()
+    success_lines = [i for i, line in enumerate(lines) if line.startswith("Correct!")]
+
+    if should_accept:
+        if not success_lines:
+            if rejection_text in result.stdout:
+                print("FAIL: documented correct answer was rejected")
+                status = max(status, 1)
+            else:
+                print("BLOCKED: correct probe had no recognized verifier response")
+                status = max(status, 2)
+        else:
+            position = success_lines[-1] + 1
+            flag = lines[position].strip() if position < len(lines) else ""
+            if re.fullmatch(r"pwn\.college\{[^{}\s]+\}", flag):
+                print("PASS: correct answer accepted and platform flag produced (redacted)")
+            else:
+                print("BLOCKED: success marker present but expected flag missing or malformed")
+                status = max(status, 2)
+    elif success_lines:
+        print("FAIL: deliberately incorrect answer was accepted")
+        status = max(status, 1)
+    elif rejection_text in result.stdout:
+        print("PASS: deliberately incorrect answer rejected")
+    else:
+        print("BLOCKED: incorrect probe had no recognized rejection response")
+        status = max(status, 2)
+
+# 0: all checks passed; 1: verification failed; 2: environment/transport blocked.
+sys.exit(status)
+```
+
+These are officer-only synthetic answers, not pwn.college flags. Do not add them to student-facing descriptions or record actual flag values in QA reports.
