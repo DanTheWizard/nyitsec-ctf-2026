@@ -287,7 +287,8 @@ class ForumTests(unittest.TestCase):
         self.assertIn('HOST = "127.0.0.1"', app)
         self.assertIn('pwd.getpwnam("nobody")', app)
         self.assertIn("os.setuid(account.pw_uid)", app)
-        self.assertIn("DROP TABLE", (LAB / "README.md").read_text())
+        self.assertFalse((LAB / "README.md").exists())
+        self.assertIn("DROP TABLE", (ROOT / "docs/officer-solutions/level-3/broken-login.md").read_text())
         self.assertTrue(
             (ROOT / "docs/its-review/broken-login/README.md").is_file()
         )

@@ -29,7 +29,7 @@ The application **intentionally** uses these unsafe SQL operations. For actual p
 
 ## Review and maintenance
 
-The server, SQLite initialization data, deliberate injection functions, HTML views, admin authorization checks, and simulated nuke logic are all committed to GitHub. The lab's `README.md` documents its intended and alternate solution paths and the reset procedure.
+The server, SQLite initialization data, deliberate injection functions, HTML views, admin authorization checks, and simulated nuke logic are all committed to GitHub. The [officer solution guide](../../officer-solutions/level-3/broken-login.md) documents its intended and alternate solution paths and the reset procedure.
 
 `tests/test_broken_login.py` exercises the real local HTTP server on a random port, confirms SQL injection can drop the local queue, checks the admin password-field bypass, tests the optional search-based credential recovery, ensures nonadmins cannot nuke, verifies the confirmation step, and asserts that the nuke affects only its temporary SQLite database. Tests also check the proper host mapping startup commands and workspace exclusions.
 

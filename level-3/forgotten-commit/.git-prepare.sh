@@ -2,7 +2,7 @@
 # Prepare the offline Git executable for the duration of this CTF container.
 set -eu
 
-chmod 600 /challenge/.history-builder.py /challenge/README.md \
+chmod 600 /challenge/.history-builder.py \
     /challenge/.git-prepare.sh /challenge/.git-runtime.tar.gz
 
 if [ -e /run/nyitsec-git ]; then

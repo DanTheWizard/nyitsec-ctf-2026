@@ -33,7 +33,7 @@ That execution path is harmless, but the lesson is not to rely on executing unkn
 
 The **exact decoded payload** and a full explanation of the program's
 download, deobfuscation, temporary-file, and execution behavior are committed
-under [`docs/its-review/suspicious-script/`](../../docs/its-review/suspicious-script/README.md).
+under [`docs/its-review/suspicious-script/`](../../its-review/suspicious-script/README.md).
 These officer/ITS files are deliberately outside `level-3/suspicious-script/`,
 so pwn.college does not stage them into `/challenge` or `/nyitsec-ctf`.
 The automated tests require the GitHub review source to match the embedded
