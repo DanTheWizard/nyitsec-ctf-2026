@@ -49,7 +49,8 @@ class WritableWorkspaceFundamentalsTests(unittest.TestCase):
                 self.assertIn("Temporary workspace notice", desc)
                 self.assertNotIn("cd /challenge", desc)
                 self.assertNotIn("you are in `/challenge`", desc)
-                notes = (folder / "README.md").read_text()
+                self.assertFalse((folder / "README.md").exists())
+                notes = (ROOT / "docs" / "officer-solutions" / "fundamentals" / f"{exercise}.md").read_text()
                 self.assertNotIn("starts in `/challenge`", notes)
                 self.assertNotIn("should show `/challenge`", notes)
 

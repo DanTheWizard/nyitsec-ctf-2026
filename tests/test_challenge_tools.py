@@ -51,6 +51,10 @@ class ScaffoldTests(unittest.TestCase):
 
         for relative in [".workspace.py", ".ctfignore"]:
             self.assertTrue((path / relative).is_file(), relative)
+        self.assertFalse((path / "README.md").exists())
+        officer_notes = self.root / "docs/officer-solutions/fundamentals/first-task.md"
+        self.assertTrue(officer_notes.is_file())
+        self.assertIn("First Task", officer_notes.read_text(encoding="utf-8"))
         self.assertIn("/nyitsec-ctf", (path / ".init").read_text(encoding="utf-8"))
         self.assertIn("/challenge/.workspace.py", (path / ".init").read_text(encoding="utf-8"))
         self.assertIn("PROTECTED_NAMES", (path / ".workspace.py").read_text(encoding="utf-8"))
@@ -109,6 +113,18 @@ class ScaffoldTests(unittest.TestCase):
             encoding="utf-8",
         )
         self.assertEqual(validate.check_repository(self.root), [])
+
+    def test_validator_rejects_missing_officer_notes(self):
+        path = scaffold.create_challenge(self.root, "fundamentals", "missing-notes", "Missing Notes")
+        (self.root / "docs/officer-solutions/fundamentals/missing-notes.md").unlink()
+        issues = validate.check_repository(self.root)
+        self.assertTrue(any("missing officer notes" in issue for issue in issues))
+
+    def test_validator_rejects_challenge_local_readme(self):
+        path = scaffold.create_challenge(self.root, "fundamentals", "leaked-notes", "Leaked Notes")
+        (path / "README.md").write_text("Officer answer: test", encoding="utf-8")
+        issues = validate.check_repository(self.root)
+        self.assertTrue(any("README.md must be in docs/officer-solutions" in issue for issue in issues))
 
     def test_validator_detects_missing_workspace_setup(self):
         path = scaffold.create_challenge(self.root, "fundamentals", "missing", "Missing")

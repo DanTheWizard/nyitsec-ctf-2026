@@ -12,7 +12,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 EXEMPT_MODULES = {"linux-cli-intro"}
 EXECUTABLES = (".init", "verify", "bin/nyitsec-answer")
-REQUIRED_FILES = (*EXECUTABLES, ".workspace.py", ".ctfignore", "DESCRIPTION.md", "README.md")
+REQUIRED_FILES = (*EXECUTABLES, ".workspace.py", ".ctfignore", "DESCRIPTION.md")
 # Approved per-challenge startup extensions; each must match byte-for-byte.
 WEB_INIT_SUFFIX = (b"\n# NYITSec challenge extension: web-service\n"
                    b"/bin/sh /challenge/.website-start.sh\n")
@@ -120,6 +120,11 @@ def check_repository(root: Path) -> list[str]:
                 continue
 
             folder = root / mid / cid
+            officer_notes = root / "docs" / "officer-solutions" / mid / f"{cid}.md"
+            if not officer_notes.is_file():
+                errors.append(f"{mid}/{cid}: missing officer notes {officer_notes.relative_to(root)}")
+            if (folder / "README.md").exists():
+                errors.append(f"{mid}/{cid}: README.md must be in docs/officer-solutions, not the deployed challenge directory")
             for rel in REQUIRED_FILES:
                 if not (folder / rel).is_file():
                     errors.append(f"{mid}/{cid}: missing {rel}; use scripts/new_challenge.py")

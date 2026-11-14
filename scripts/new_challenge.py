@@ -12,6 +12,7 @@ import yaml
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = PROJECT_ROOT / "templates" / "nyitsec-challenge"
+OFFICER_TEMPLATE = PROJECT_ROOT / "templates" / "officer-notes.md"
 RESERVED_MODULES = {"linux-cli-intro"}
 SLUG_RE = re.compile(r"^[a-z][a-z0-9-]*$")
 
@@ -47,9 +48,12 @@ def create_challenge(root: Path, module_id: str, challenge_id: str,
     module_dir = root / module_id
     module_file = module_dir / "module.yml"
     target = module_dir / challenge_id
+    officer_notes = root / "docs" / "officer-solutions" / module_id / f"{challenge_id}.md"
 
     if target.exists():
         raise FileExistsError(f"Challenge already exists: {target}")
+    if officer_notes.exists():
+        raise FileExistsError(f"Officer notes already exist: {officer_notes}")
 
     if module_file.exists():
         if new_module_name:
@@ -72,11 +76,14 @@ def create_challenge(root: Path, module_id: str, challenge_id: str,
            if isinstance(ch, dict)):
         raise ValueError(f"Challenge ID already registered: {challenge_id}")
 
-    for name in [".init", ".workspace.py", ".ctfignore", "verify", "bin/nyitsec-answer", "DESCRIPTION.md", "README.md"]:
+    for name in [".init", ".workspace.py", ".ctfignore", "verify", "bin/nyitsec-answer", "DESCRIPTION.md"]:
         if not (TEMPLATE / name).is_file():
             raise FileNotFoundError(f"Missing NYITSec template file: {name}")
 
-    # The template is the single place to change defaults for future challenges.
+    if not OFFICER_TEMPLATE.is_file():
+        raise FileNotFoundError(f"Missing NYITSec officer template: {OFFICER_TEMPLATE}")
+
+    # The challenge template contains only deployed files; officer notes stay outside.
     shutil.copytree(TEMPLATE, target)
     for path in target.rglob("*"):
         if path.is_file():
@@ -85,6 +92,14 @@ def create_challenge(root: Path, module_id: str, challenge_id: str,
                               .replace("{{MODULE_ID}}", module_id)
                               .replace("{{CHALLENGE_ID}}", challenge_id))
             path.write_text(content, encoding="utf-8")
+
+    # Write the officer guide outside the directory that pwn.college deploys.
+    notes_content = OFFICER_TEMPLATE.read_text(encoding="utf-8")
+    notes_content = (notes_content.replace("{{CHALLENGE_TITLE}}", title)
+                                  .replace("{{MODULE_ID}}", module_id)
+                                  .replace("{{CHALLENGE_ID}}", challenge_id))
+    officer_notes.parent.mkdir(parents=True, exist_ok=True)
+    officer_notes.write_text(notes_content, encoding="utf-8")
 
     # chmod explicitly because Windows checkouts may lose Unix file-mode bits.
     for relative in [".init", "verify", "bin/nyitsec-answer"]:
@@ -126,7 +141,7 @@ def main() -> int:
         parser.error(str(exc))
 
     print(f"Created {target}")
-    print("NEXT: implement verify.is_correct(), edit DESCRIPTION.md, and run validation.")
+    print("NEXT: implement verify.is_correct(), edit DESCRIPTION.md and officer notes in docs/officer-solutions, and run validation.")
     return 0
 
 
