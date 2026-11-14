@@ -13,3 +13,53 @@ The `.init` file uses the standard writable workspace startup plus an exact appr
 The `bin/dig` wrapper prefers a real system dig binary or runs the **genuine ISC dig** program from the bundled Ubuntu library archive. This requires no student installation, internet access, or privilege escalation. Third-party provenance is documented in `tools/DIG_RUNTIME_LICENSES.md`. The regular `nyitsec-answer` verifier unlocks only the platform's per-student `/flag`.
 
 **Live checks:** `dig -v`; `dig @127.0.0.1 -p 5300 archive.nyitsec.test TXT`; follow the DNS chain; decode the message; test correct/wrong answers; ensure the server source cannot be read by `hacker`; restart the challenge and repeat. Do not assume that one DNS request reveals the answer.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct inputs (prompt order):** `The red lantern waits by the harbor`  
+**Deliberately incorrect test inputs:** `The blue lantern waits by the harbor`  
+**Input policy:** Case-insensitive with surrounding whitespace stripped; the phrase and DNS fragments are fixed for this challenge.
+
+### Reproduce the intended solution
+
+Follow the fictional UDP DNS service's chain: TXT at `archive.nyitsec.test` → MX `mx1.archive.nyitsec.test` → TXT custodian `handoff.archive.nyitsec.test` → CNAME `vault.archive.nyitsec.test` → TXT `part1.vault...`, `part2.vault...`, `part3.vault...`. Use the bundled dig (localhost only):
+
+```bash
+dig @127.0.0.1 -p 5300 archive.nyitsec.test TXT
+dig @127.0.0.1 -p 5300 archive.nyitsec.test MX
+dig @127.0.0.1 -p 5300 mx1.archive.nyitsec.test TXT
+dig @127.0.0.1 -p 5300 handoff.archive.nyitsec.test CNAME
+dig @127.0.0.1 -p 5300 vault.archive.nyitsec.test TXT
+for n in 1 2 3; do dig +short @127.0.0.1 -p 5300 part$n.vault.archive.nyitsec.test TXT; done
+```
+
+Collect the ordered `data=` tokens, concatenate them without spaces, apply ROT13, then Base64-decode. A reproducible officer reference for the fixed payload:
+
+```bash
+python3 - <<'PY'
+import base64, codecs
+parts = ['ITuyVUWyMPOfLJ','50MKWhVUqunKEmV','TW5VUEbMFObLKWvo3V=']
+print(base64.b64decode(codecs.decode(''.join(parts), 'rot_13')).decode())
+PY
+```
+
+Expected phrase: `The red lantern waits by the harbor`.
+
+### Noninteractive checker test over SSH
+
+The command pipelines below check for the fixed `Correct!` success marker without printing or storing the student's unique pwn.college flag.
+
+```bash
+if printf '%s\n' 'The blue lantern waits by the harbor' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: incorrect input accepted'
+else
+  echo 'PASS: incorrect input rejected'
+fi
+if printf '%s\n' 'The red lantern waits by the harbor' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+Keep this literal solution in the **private officer guide only**, never in the student-facing challenge directory or logs. Do not record platform flag values.

@@ -58,3 +58,34 @@ that ITS has approved the activity.
 4. (Officer-only) Run `python audit_sync.py` in the disposable challenge container, confirm the **joke message**, confirm `/tmp/payload.bin` is created, and check it does not reveal the answer as output.
 5. Check wrong option / correct phrase, correct option / wrong phrase, and both wrong all produce the same error. Only the correct pair unlocks the unique `/flag`.
 6. Confirm other modules and the standard NYITSec workspace still work.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct inputs (prompt order):** `B` → `IKnowPythonDeobfuscation#404`  
+**Deliberately incorrect test inputs:** `A` → `IKnowPythonDeobfuscation#404`  
+**Input policy:** Part 1 selection is normalized to uppercase; Part 2 phrase is case-sensitive with trimming. Both are required simultaneously; wrong combinations return the same generic error.
+
+### Reproduce the intended solution
+
+Inspect the synthetic client `audit_sync.py` statically. `_r()` recovers the localhost payload URL; `_q(blob)` applies XOR and zlib to recover Python source, while `_w()` would execute it. **Do not execute the unknown-looking client for QA.** The private review source at `docs/its-review/suspicious-script/recovered_payload.py` contains the recovered string `IKnowPythonDeobfuscation#404`.
+
+The correct behavior option is **B**, describing download → decode → execute inside the current Python process. For answer-checker-only QA, use the documented two inputs; no payload execution or reverse engineering is necessary.
+
+### Noninteractive checker test over SSH
+
+The command pipelines below check for the fixed `Correct!` success marker without printing or storing the student's unique pwn.college flag.
+
+```bash
+if printf '%s\n%s\n' 'A' 'IKnowPythonDeobfuscation#404' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: incorrect input accepted'
+else
+  echo 'PASS: incorrect input rejected'
+fi
+if printf '%s\n%s\n' 'B' 'IKnowPythonDeobfuscation#404' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+Keep this literal solution in the **private officer guide only**, never in the student-facing challenge directory or logs. Do not record platform flag values.

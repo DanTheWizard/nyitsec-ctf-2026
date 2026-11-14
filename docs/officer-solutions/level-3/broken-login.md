@@ -60,3 +60,34 @@ See [`docs/its-review/broken-login/README.md`](../../its-review/broken-login/REA
 7. Reset Challenge. Verify the fictional accounts, queue and posts are restored.
 8. Test alternate UNION-based credential discovery and genuine admin login.
 9. Verify `cat /challenge/.forum-app.py` fails for the normal `hacker` user, and `/run/nyitsec-forum/` is not readable by `hacker`.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct inputs (prompt order):** `OrbitingToaster#73`  
+**Deliberately incorrect test inputs:** `OrbitingToaster#74`  
+**Input policy:** Case-sensitive; leading/trailing whitespace is stripped.
+
+### Reproduce the intended solution
+
+The intended *student* route uses the fictional isolated forum at `http://nyitsecwebsite.test/` to drop the synthetic signup queue, authenticate as its fake admin, confirm the fictional Nuke action, and read `OrbitingToaster#73` from the success screen. The existing `Intended SQL injection solution` above documents the precise training-only workflow.
+
+For **checker QA**, do not execute that flow or modify the test forum: use the documented fixed answer directly with `nyitsec-answer`. Run the separate forum behavior and reset smoke tests if required.
+
+### Noninteractive checker test over SSH
+
+The command pipelines below check for the fixed `Correct!` success marker without printing or storing the student's unique pwn.college flag.
+
+```bash
+if printf '%s\n' 'OrbitingToaster#74' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: incorrect input accepted'
+else
+  echo 'PASS: incorrect input rejected'
+fi
+if printf '%s\n' 'OrbitingToaster#73' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+Keep this literal solution in the **private officer guide only**, never in the student-facing challenge directory or logs. Do not record platform flag values.

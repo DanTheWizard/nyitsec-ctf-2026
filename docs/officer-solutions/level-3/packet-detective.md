@@ -44,3 +44,40 @@ Students who use a different valid investigative workflow should also receive cr
 5. Try a different user's credentials and a wrong password. Both must fail without revealing which part was incorrect.
 6. Submit the exact recovered values and verify the flag.
 7. Reset Challenge and verify the capture and notes are restored.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct inputs (prompt order):** `bob` → `Lumen&Branch#47`  
+**Deliberately incorrect test inputs:** `bob` → `not-the-password`  
+**Input policy:** Both values required: username case-insensitive with trimming, password case-sensitive with trimming. The checker gives the same generic error for any wrong combination.
+
+### Reproduce the intended solution
+
+Analyze the synthetic, prerecorded `traffic.pcap` without network requests. Read `incident-brief.txt`; find the `/tickets/CASE-417` request; the ticket response links trace `LAB-7B`; find its matching `POST /api/login` request; reassemble the TCP stream in Wireshark or tshark. Decode the URL-encoded request form (`%26` is `&` and `%23` is `#`). Exact username is `bob` and password `Lumen&Branch#47`.
+
+```bash
+cd /nyitsec-ctf
+tshark -r traffic.pcap -Y 'http.request' -T fields -e tcp.stream -e http.request.method -e http.request.uri
+python3 -c 'from urllib.parse import unquote_plus; print(unquote_plus("Lumen%26Branch%2347"))'
+```
+
+For answer-checker-only QA, supply the documented pair; analyzing the PCAP is a separate asset-integrity test.
+
+### Noninteractive checker test over SSH
+
+The command pipelines below check for the fixed `Correct!` success marker without printing or storing the student's unique pwn.college flag.
+
+```bash
+if printf '%s\n%s\n' 'bob' 'not-the-password' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: incorrect input accepted'
+else
+  echo 'PASS: incorrect input rejected'
+fi
+if printf '%s\n%s\n' 'bob' 'Lumen&Branch#47' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+Keep this literal solution in the **private officer guide only**, never in the student-facing challenge directory or logs. Do not record platform flag values.

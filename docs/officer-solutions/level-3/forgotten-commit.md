@@ -47,3 +47,48 @@ If desired, students may use `git restore --source=<approved-commit> -- config/r
 ## Offline Git dependency
 
 The published pwn.college package profile does not list Git by default, so this challenge bundles **genuine Git**, not a simulated command. `.git-prepare.sh` extracts the executable and libraries to disposable `/run/nyitsec-git`, then `/challenge/bin/git` exposes ordinary Git commands on the student PATH. `tools/build_forgotten_git_runtime.py` reproduces the bundle. Third-party provenance is documented in `tools/FORGOTTEN_GIT_RUNTIME_LICENSES.md` and the hidden runtime manifest. The startup and bundle are excluded from the working directory, and the exact source history generator is committed for NYITSec and ITS inspection.
+
+## Officer QA: verified answer and repeatable solution
+
+**Exact correct inputs (prompt order):** `Paper satellites still orbit`  
+**Deliberately incorrect test inputs:** `Not the recovery phrase`  
+**Input policy:** Case-insensitive; leading/trailing whitespace is stripped.
+
+### Reproduce the intended solution
+
+Inspect the fictional generated Git repository, without changing it:
+
+```bash
+cd /nyitsec-ctf/night-relay
+git status
+git log --oneline --all
+git log --all --diff-filter=D --summary
+git log --all -- config/recovery-ledger.toml
+```
+
+Find the deletion commit titled `cleanup: remove retired handoff ledger`, then use the parent revision (replace the placeholder with the actual hash):
+
+```bash
+git show <deletion-commit>^:config/recovery-ledger.toml
+```
+
+The approved ledger contains `recovery_phrase = "Paper satellites still orbit"`. The old draft phrase is not accepted. No static Git commit SHA is assumed.
+
+### Noninteractive checker test over SSH
+
+The command pipelines below check for the fixed `Correct!` success marker without printing or storing the student's unique pwn.college flag.
+
+```bash
+if printf '%s\n' 'Not the recovery phrase' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'FAIL: incorrect input accepted'
+else
+  echo 'PASS: incorrect input rejected'
+fi
+if printf '%s\n' 'Paper satellites still orbit' | nyitsec-answer | grep -Fq 'Correct!'; then
+  echo 'PASS: known correct input accepted'
+else
+  echo 'FAIL: known correct input rejected'
+fi
+```
+
+Keep this literal solution in the **private officer guide only**, never in the student-facing challenge directory or logs. Do not record platform flag values.
