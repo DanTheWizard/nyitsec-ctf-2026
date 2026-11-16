@@ -75,6 +75,37 @@ class InspectSourceTests(unittest.TestCase):
             server.server_close()
             thread.join(timeout=3)
 
+    def test_fictional_domain_and_host_header_isolation(self):
+        website = runpy.run_path(str(CHALLENGE / ".website.py"), run_name="unit-test")
+        self.assertEqual(website["HOST"], "127.0.0.1")
+        self.assertEqual(website["PORT"], 80)
+        self.assertEqual(website["DOMAIN"], "harborview.test")
+        # Run on an ephemeral port in CI, so no privileged bind is required.
+        server = website["create_server"](port=0)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            endpoint = f"http://127.0.0.1:{server.server_address[1]}/"
+            request = urllib.request.Request(
+                endpoint, headers={"Host": "harborview.test"}
+            )
+            with urllib.request.urlopen(request, timeout=3) as response:
+                self.assertEqual(response.status, 200)
+                self.assertIn(b"Harborview Learning Center", response.read())
+
+            # No remote host mapping is required; this explicitly exercises the
+            # same HTTP Host header used by the container-local name.
+            bad_request = urllib.request.Request(
+                endpoint, headers={"Host": "outside.example"}
+            )
+            with self.assertRaises(urllib.error.HTTPError) as raised:
+                urllib.request.urlopen(bad_request, timeout=3)
+            self.assertEqual(raised.exception.code, 421)
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=3)
+
     def test_idle_firefox_connection_does_not_block_another_request(self):
         """An accepted TCP connection with no HTTP request cannot stall the site."""
         website = runpy.run_path(
@@ -128,7 +159,8 @@ class InspectSourceTests(unittest.TestCase):
         instructions = (CHALLENGE / "DESCRIPTION.md").read_text()
         self.assertIn("Desktop", instructions)
         self.assertIn("Firefox", instructions)
-        self.assertIn("http://127.0.0.1:8765/", instructions)
+        self.assertIn("http://harborview.test/", instructions)
+        self.assertNotIn(":8765", instructions)
         self.assertIn("Ctrl+U", instructions)
         self.assertIn("nyitsec-answer", instructions)
         self.assertNotIn(CODE, instructions)
@@ -171,10 +203,18 @@ class InspectSourceTests(unittest.TestCase):
         self.assertIn("chmod 600 /challenge/.website.py", startup)
         self.assertIn("nohup /usr/local/bin/python -I", startup)
         self.assertIn("urllib.request.urlopen", startup)
-        self.assertIn("http://127.0.0.1:8765/", startup)
+        self.assertIn('http://127.0.0.1/', startup)
+        self.assertIn("127.0.0.1 harborview.test", startup)
+        self.assertIn("/etc/hosts", startup)
+        self.assertIn('socket.gethostbyname("harborview.test")', startup)
+        self.assertIn('urllib.request.ProxyHandler({})', startup)
+        self.assertIn('"Host": "harborview.test"', startup)
+        self.assertNotIn(":8765", startup)
 
         website = (CHALLENGE / ".website.py").read_text()
         self.assertIn('HOST = "127.0.0.1"', website)
+        self.assertIn('PORT = 80', website)
+        self.assertIn('DOMAIN = "harborview.test"', website)
         self.assertIn("os.setuid(1000)", website)
 
         module = yaml.safe_load((ROOT / "level-2/module.yml").read_text())
