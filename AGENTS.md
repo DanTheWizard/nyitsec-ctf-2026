@@ -5,8 +5,8 @@ These instructions apply to the entire repository, including code produced by Ch
 ## Goals and environment
 
 - We maintain the NYITSec 2026 **hidden** pwn.college dojo in this GitHub repository.
-- The YAML ID is now `nyitsec-ctf-2026` and the display name is `NYITSec CTF 2026`. The previous testing dojo (`example~36e653d5`) is a distinct registered dojo, not an alias; do not assume its URL or student records transfer to the new dojo.
-- Do not update the old testing dojo while preparing the new registration. The deployment job must stay gated until the new dojo's full `DOJO_REF`, `DOJO_DEPLOY_ENABLED=true`, and a fresh `UPDATE_CODE` secret are configured.
+- The YAML ID is `nyitsec-ctf-2026` and the display name is `NYITSec CTF 2026`. The existing registered dojo was renamed in place from `example~36e653d5` to `nyitsec-ctf-2026~36e653d5`, retaining the same dojo, members, and solve history.
+- The existing dojo is still `type: hidden`. Do not make it publicly listed without an explicit NYITSec decision. GitHub Actions deploys to `nyitsec-ctf-2026~36e653d5` using the existing `UPDATE_CODE` repository secret after validation on `main`. Keep the workflow reference synchronized if the YAML ID changes again.
 - Keep the five working Fundamentals challenges and their protected verification logic intact.
 - Keep the optional Linux & CLI introduction (`linux-cli-intro`) ungraded; do not reintroduce removed sample or pilot modules.
 - Never put dojo update codes, private SSH keys, API tokens, actual passwords, student records, or reusable static pwn.college flags in source control.
@@ -52,4 +52,4 @@ python3 -m unittest discover -s tests -v
 
 Check that `dojo.yml` and every relevant `module.yml` parse, `.init`, `verify`, and the command wrapper are executable (`100755`), `.workspace.py` and `.ctfignore` exist, standard startup/copy files match the shared template, no scaffold TODOs remain, officer notes exist outside challenge folders, no challenge-local `README.md` exists, and documentation says `nyitsec-answer` and `/nyitsec-ctf`. Preserve the working verifiers and their student-specific `/flag` behavior.
 
-Changes go to a feature branch and pull request, not directly to `main`. After merge, GitHub Actions validates sources; it triggers the dojo updater only when the new dojo's deployment variables have been configured. Test the new dojo's student experience in a fresh workspace before sharing the official link.
+Changes go to a feature branch and pull request, not directly to `main`. After merge, GitHub Actions validates sources and deploys to the same renamed dojo using its existing update secret. Test the student experience in a fresh workspace before making the dojo publicly listed.

@@ -1,6 +1,6 @@
 # NYITSec CTF 2026
 
-Source code for the NYITSec pwn.college dojo. The new dojo URL will be published after registering the `nyitsec-ctf-2026` dojo. The previous testing dojo has its own reference and is not renamed by changing this repository.
+Source code for the **[NYITSec CTF 2026 dojo](https://pwn.college/nyitsec-ctf-2026~36e653d5/)** on pwn.college. This is the original dojo, renamed from `example~36e653d5` by changing `id` in `dojo.yml`. Its registered suffix, members, and existing solve history remain associated with the same dojo.
 
 ## Training modules
 
@@ -35,10 +35,8 @@ python3 scripts/validate_dojo.py
 python3 -m unittest discover -s tests -v
 ```
 
-Pull requests automatically run these checks. Merging into `main` triggers validation. Deployment is intentionally disabled until the new dojo is registered and its update settings are configured.
+Pull requests run the repository checks. After changes are reviewed and merged into `main`, GitHub Actions validates the source and updates the **existing** pwn.college dojo at [nyitsec-ctf-2026~36e653d5](https://pwn.college/nyitsec-ctf-2026~36e653d5/) using the repository secret `UPDATE_CODE`. Because this is the original dojo with an updated URL, its existing update code does not need to be replaced solely due to the rename.
 
-The dojo's base YAML ID is `nyitsec-ctf-2026`. When the new dojo is created on pwn.college, it will receive a registered reference ID, which may contain a suffix. The prior testing dojo (`example~36e653d5`) remains separate; its URL and records are not automatically migrated.
+The YAML base ID is `nyitsec-ctf-2026`; the `~36e653d5` suffix remains tied to the same registered dojo. If the YAML ID is renamed again, update the dojo reference in `.github/workflows/update.yml` as well.
 
-After creating the new dojo and testing its challenges, configure the GitHub Actions repository variables `DOJO_REF` (the **full** new dojo reference ID) and `DOJO_DEPLOY_ENABLED` (`true`), and replace the repository secret `UPDATE_CODE` with the **new dojo's** update code. The workflow can then deploy on a push to `main` or via **Run workflow**. Until those variables are configured, pushes only validate; they do not update either dojo.
-
-Keep `type: hidden` until the club intentionally makes the dojo publicly listed. Hidden does not mean password protected; only share access links with the intended participants. **Never commit or share the update code, private update URL, or student flags.**
+The dojo remains **hidden** (`type: hidden`) until NYITSec is ready to make it publicly listed. A hidden dojo is not a substitute for access controls, so distribute its link only to intended participants while it is in private testing. Never commit or share the update code, private update URL, or student flags.
