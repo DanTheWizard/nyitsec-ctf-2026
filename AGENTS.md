@@ -5,7 +5,7 @@ These instructions apply to the entire repository, including code produced by Ch
 ## Goals and environment
 
 - We maintain the NYITSec 2026 **hidden** pwn.college dojo in this GitHub repository.
-- The YAML ID is now `nyitsec` and the display name is `NYITSec CTF 2026`. The previous testing dojo (`example~36e653d5`) is a distinct registered dojo, not an alias; do not assume its URL or student records transfer to the new dojo.
+- The YAML ID is now `nyitsec-ctf-2026` and the display name is `NYITSec CTF 2026`. The previous testing dojo (`example~36e653d5`) is a distinct registered dojo, not an alias; do not assume its URL or student records transfer to the new dojo.
 - Do not update the old testing dojo while preparing the new registration. The deployment job must stay gated until the new dojo's full `DOJO_REF`, `DOJO_DEPLOY_ENABLED=true`, and a fresh `UPDATE_CODE` secret are configured.
 - Keep the five working Fundamentals challenges and their protected verification logic intact.
 - Keep the optional Linux & CLI introduction (`linux-cli-intro`) ungraded; do not reintroduce removed sample or pilot modules.
