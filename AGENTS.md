@@ -4,8 +4,9 @@ These instructions apply to the entire repository, including code produced by Ch
 
 ## Goals and environment
 
-- We maintain the NYITSec 2026 **private** pwn.college dojo in this GitHub repository.
-- Preserve the dojo's YAML ID `example` unless the administrator explicitly migrates the live dojo. The deployed dojo reference is `example~36e653d5`.
+- We maintain the NYITSec 2026 **hidden** pwn.college dojo in this GitHub repository.
+- The YAML ID is now `nyitsec-ctf-2026` and the display name is `NYITSec CTF 2026`. The previous testing dojo (`example~36e653d5`) is a distinct registered dojo, not an alias; do not assume its URL or student records transfer to the new dojo.
+- Do not update the old testing dojo while preparing the new registration. The deployment job must stay gated until the new dojo's full `DOJO_REF`, `DOJO_DEPLOY_ENABLED=true`, and a fresh `UPDATE_CODE` secret are configured.
 - Keep the five working Fundamentals challenges and their protected verification logic intact.
 - Keep the optional Linux & CLI introduction (`linux-cli-intro`) ungraded; do not reintroduce removed sample or pilot modules.
 - Never put dojo update codes, private SSH keys, API tokens, actual passwords, student records, or reusable static pwn.college flags in source control.
@@ -51,4 +52,4 @@ python3 -m unittest discover -s tests -v
 
 Check that `dojo.yml` and every relevant `module.yml` parse, `.init`, `verify`, and the command wrapper are executable (`100755`), `.workspace.py` and `.ctfignore` exist, standard startup/copy files match the shared template, no scaffold TODOs remain, officer notes exist outside challenge folders, no challenge-local `README.md` exists, and documentation says `nyitsec-answer` and `/nyitsec-ctf`. Preserve the working verifiers and their student-specific `/flag` behavior.
 
-Changes go to a feature branch and pull request, not directly to `main`. After merge, GitHub Actions validates sources before triggering the dojo updater. Test student experience in the live workspace after deployment.
+Changes go to a feature branch and pull request, not directly to `main`. After merge, GitHub Actions validates sources; it triggers the dojo updater only when the new dojo's deployment variables have been configured. Test the new dojo's student experience in a fresh workspace before sharing the official link.

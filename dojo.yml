@@ -1,5 +1,5 @@
-id: example
-name: NYITSec CTF 2026 (Testing)
+id: nyitsec-ctf-2026
+name: NYITSec CTF 2026
 description: |
   Welcome to NYITSec's introductory Capture the Flag (CTF) event! Explore hands-on cybersecurity challenges in three difficulty sections: Beginner, Easy, and Intermediate. Topics include Linux, log investigation, digital forensics, networking, and web security.
 
