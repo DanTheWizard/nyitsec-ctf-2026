@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   validate:
@@ -20,11 +21,14 @@ jobs:
       - name: Test challenge authoring tools
         run: python -m unittest discover -s tests -v
 
+  # Keep the original testing dojo untouched during migration.
+  # Enable only after registering the new dojo and configuring a fresh update code.
   update:
+    if: ${{ vars.DOJO_DEPLOY_ENABLED == 'true' && vars.DOJO_REF != '' }}
     needs: validate
     runs-on: ubuntu-latest
     steps:
       - uses: pwncollege/dojo-update@v1
         with:
-          dojo: example~36e653d5
+          dojo: ${{ vars.DOJO_REF }}
           update_code: ${{ secrets.UPDATE_CODE }}
