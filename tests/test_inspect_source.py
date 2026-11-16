@@ -202,7 +202,7 @@ class InspectSourceTests(unittest.TestCase):
         startup = (CHALLENGE / ".website-start.sh").read_text()
         self.assertIn("chmod 600 /challenge/.website.py", startup)
         self.assertIn("nohup /usr/local/bin/python -I", startup)
-        self.assertIn("urllib.request.urlopen", startup)
+        self.assertIn("opener.open(request", startup)
         self.assertIn('http://127.0.0.1/', startup)
         self.assertIn("127.0.0.1 harborview.test", startup)
         self.assertIn("/etc/hosts", startup)
