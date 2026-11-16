@@ -8,9 +8,9 @@ A fictional community website looks completely normal, but an investigator suspe
 
 1. Start the challenge and select **Workspace → Desktop**.
 2. Open **Firefox** inside the Desktop.
-3. Visit **http://127.0.0.1:8765/**.
+3. Visit **http://harborview.test/**.
 
-The website is available **only inside this challenge environment**, not on your own computer.
+The fictional `.test` domain points to **127.0.0.1 inside this challenge VM only**. It is not a public website and cannot be accessed from your own computer.
 
 ### Investigate
 

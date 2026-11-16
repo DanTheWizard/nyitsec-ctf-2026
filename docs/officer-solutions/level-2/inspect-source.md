@@ -11,17 +11,17 @@ The browser-visible site is a polished fictional Harborview Learning Center land
 ## Challenge startup
 
 - Standard `.init` staging and Bash startup remain **byte-for-byte identical to the shared template**, except for an approved, validated two-line extension to call `/challenge/.website-start.sh`.
-- `.website-start.sh` locks down `/challenge/.website.py` to mode `0600`, launches a local Python HTTP server in the background, and waits until an HTTP health check passes. This protects the source file from ordinary filesystem inspection while leaving the public HTML accessible through HTTP.
-- `.website.py` binds only to **127.0.0.1:8765**, serves **GET / or /index.html** and a 204 favicon, has no uploads or dynamic parameters, sets basic security headers, and **drops to the `hacker` UID after binding**. The HTML is generated in memory; no `.html` file is copied into the student workspace.
+- `.website-start.sh` maps `harborview.test` to `127.0.0.1` in this container's `/etc/hosts`, locks down `/challenge/.website.py` to mode `0600`, launches a local Python HTTP server in the background, and waits until a hostname-aware HTTP health check passes. The `.test` name never requires public DNS. This protects the source file from ordinary filesystem inspection while leaving the public HTML accessible through HTTP.
+- `.website.py` binds only to **127.0.0.1:80**, serves **GET / or /index.html** and a 204 favicon, has no uploads or dynamic parameters, checks the HTTP Host header, sets basic security headers, and **drops to the `hacker` UID after binding to privileged port 80**. The HTML is generated in memory; no `.html` file is copied into the student workspace.
 - `.ctfignore` explicitly excludes the server implementation and its startup script from `/nyitsec-ctf`.
-- The student's `/nyitsec-ctf` starts empty for this challenge. Their intended investigation path is **Workspace → Desktop → Firefox → http://127.0.0.1:8765/**.
+- The student's `/nyitsec-ctf` starts empty for this challenge. Their intended investigation path is **Workspace → Desktop → Firefox → http://harborview.test/**.
 
 **Important limitation:** No ordinary web server can guarantee that only Firefox can inspect HTTP source; a student could also use `curl` or another HTTP client. The exercise makes the browser the expected learning workflow, without fragile user-agent filters or artificial access restrictions.
 
 ## Live smoke tests
 
 1. Launch the challenge and check `pwd` shows `/nyitsec-ctf`, with no website implementation files staged.
-2. Open Workspace → Desktop → Firefox and load **http://127.0.0.1:8765/**. Confirm the fictional page renders without errors or external content.
+2. Open Workspace → Desktop → Firefox and load **http://harborview.test/**. Confirm the fictional page renders without errors or external content.
 3. Use **View Page Source** or **Ctrl+U**. Confirm the internal publishing comment contains the review code.
 4. Verify `ls -la /nyitsec-ctf` has no `.website.py` and `cat /challenge/.website.py` reports permission denied.
 5. Confirm `nyitsec-answer` rejects incorrect input and accepts the exact code from the HTML source, revealing the unique platform flag.
@@ -37,15 +37,15 @@ The root-owned initialization script's web-service suffix is checked by the repo
 
 ### Reproduce the intended solution
 
-With the challenge's localhost service running, use Desktop → Firefox → `http://127.0.0.1:8765/` and View Page Source / Ctrl+U. The HTML comment contains `Training review code: NYITSEC-SOURCE-26`.
+With the challenge's localhost service running, use Desktop → Firefox → `http://harborview.test/` and View Page Source / Ctrl+U. The HTML comment contains `Training review code: NYITSEC-SOURCE-26`.
 
 For headless officer QA via SSH, the equivalent safe local request is:
 
 ```bash
-curl --fail --silent http://127.0.0.1:8765/ | grep 'Training review code'
+curl --noproxy '*' --fail --silent http://harborview.test/ | grep 'Training review code'
 ```
 
-Only localhost is contacted. No external website is involved.
+Only the loopback address is contacted through the container-only `.test` hostname. No external website is involved. Since each challenge uses a separate disposable VM, this port-80 service does not conflict with The Broken Login.
 
 ### Noninteractive checker test over SSH
 

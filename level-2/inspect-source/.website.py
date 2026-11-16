@@ -10,7 +10,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import os
 
 HOST = "127.0.0.1"
-PORT = 8765
+PORT = 80
+DOMAIN = "harborview.test"
 
 PAGE = r"""<!doctype html>
 <html lang="en">
@@ -102,7 +103,20 @@ PAGE = r"""<!doctype html>
 
 
 class SiteHandler(BaseHTTPRequestHandler):
+    def allowed_host(self):
+        # Only the fictional local hostname and loopback development hosts.
+        # Avoid responding to arbitrary Host headers (DNS rebinding defense).
+        authority = self.headers.get("Host", "").strip().lower()
+        return authority in {
+            DOMAIN, f"{DOMAIN}:{self.server.server_port}",
+            HOST, f"{HOST}:{self.server.server_port}",
+            "localhost", f"localhost:{self.server.server_port}",
+        }
+
     def do_GET(self):
+        if not self.allowed_host():
+            self.send_error(421, "Unknown local hostname")
+            return
         if self.path == "/favicon.ico":
             self.send_response(204)
             self.end_headers()
@@ -134,7 +148,7 @@ def create_server(host=HOST, port=PORT):
 def main():
     server = create_server()
     if os.geteuid() == 0:
-        # Root is only needed by .init to launch a protected source file.
+        # Root binds privileged HTTP port 80, then drops its privileges.
         # HTTP handling runs without privileged permissions.
         os.setgroups([])
         os.setgid(1000)
